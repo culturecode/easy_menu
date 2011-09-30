@@ -87,7 +87,7 @@ $menu-bar-item-spacing: 10px;
     list-style: none;
     height: 2*$menu-bar-item-border-width + $menu-bar-item-height;
 
-    .menu_bar_item_wrapper{
+    .menu_bar_content{
         display: inline-block;
         vertical-align: top;
 
@@ -97,15 +97,24 @@ $menu-bar-item-spacing: 10px;
 
         .menu_bar_item{
             @include menu_bar_item;
-        }        
+        }
+        
+        input[type=search], input[type=text]{
+            border-radius: 2px;
+            border: 1px solid #AAA;
+            height: 28px;
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+        }
     }
 }
 .menu_bar.toggle_menu{
-    .menu_bar_item_wrapper:first-child .menu_bar_item{
+    .menu_bar_content:first-child .menu_bar_item{
         border-top-left-radius: 14px;
         border-bottom-left-radius: 14px;
     }
-    .menu_bar_item_wrapper:last-child .menu_bar_item{
+    .menu_bar_content:last-child .menu_bar_item{
         border-top-right-radius: 14px;
         border-bottom-right-radius: 14px;
     }    

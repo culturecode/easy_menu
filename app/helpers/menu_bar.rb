@@ -2,7 +2,7 @@ class MenuBar
   TOGGLE_MENU_CLASS = 'toggle_menu'
   
   MENU_BAR_CLASS = 'menu_bar'
-  MENU_BAR_ITEM_WRAPPER_CLASS = 'menu_bar_item_wrapper'
+  MENU_BAR_CONTENT_CLASS = 'menu_bar_content'
   MENU_BAR_ITEM_CLASS = 'menu_bar_item'
   
   SELECTED_CLASS = 'selected'
@@ -26,13 +26,17 @@ class MenuBar
   ensure
     @grouped = false
   end
+
+  def menu_bar_content(content, options = {})
+    create_menu_bar_item(MenuBarContent, content, options = {})
+  end
   
   def menu_bar_item(content, options = {})
     create_menu_bar_item(MenuBarItem, content, options = {})
   end
 
-  def submit_button(content, options = {})
-    create_menu_bar_item(SubmitButton, content, options = {})
+  def menu_bar_input(content, options = {})
+    create_menu_bar_item(MenuBarInput, content, options = {})
   end
 
   def to_s
@@ -60,9 +64,8 @@ class MenuBar
     
     return html_opts
   end
-  
-  # MENU BAR ITEM
-  class MenuBarItem
+
+  class MenuBarContent
     def initialize(template, content, options = {})
       @template = template
       @content = content
@@ -80,16 +83,14 @@ class MenuBar
     private
     
     def wrap_content(content)
-      @template.content_tag :li, content, wrapper_options do
-        @template.content_tag :div, content, html_options
-      end
+      @template.content_tag :li, content, wrapper_options
     end
     
     def wrapper_options
-      wrapper_opts = {}
+      wrapper_opts = @options[:wrapper_options] || {}
 
       # Set up the css class
-      wrapper_opts[:class] = [MENU_BAR_ITEM_WRAPPER_CLASS]
+      wrapper_opts[:class] = [MENU_BAR_CONTENT_CLASS]
       wrapper_opts[:class] << GROUPED_CLASS if @options[:grouped]
       wrapper_opts[:class] = wrapper_opts[:class].compact.join(' ')
 
@@ -97,7 +98,7 @@ class MenuBar
     end
     
     def html_options
-      html_opts = {}
+      html_opts = @options[:html_options] || {}
 
       # Set up the css class
       html_opts[:class] = [MENU_BAR_ITEM_CLASS]
@@ -105,20 +106,23 @@ class MenuBar
       html_opts[:class] = html_opts[:class].compact.join(' ')      
       
       return html_opts
-    end
+    end    
   end
+
   
-  class SubmitButton < MenuBarItem
+  class MenuBarItem < MenuBarContent
     private
     
     def wrap_content(content)
-      super @template.label_tag{ @template.submit_tag(content) + " " + content }
+      super(@template.content_tag :div, content, html_options)
     end
+  end
+  
+  class MenuBarInput < MenuBarItem
+    private
     
-    def html_options
-      html_opts = super
-      html_opts[:class] << " submit_button"
-      return html_opts
-    end
+    def wrap_content(content)
+      super @template.label_tag(nil, content)
+    end    
   end
 end
