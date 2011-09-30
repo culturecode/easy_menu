@@ -11,7 +11,7 @@ $menu-bar-item-horizontal-padding: 7px;
 $menu-bar-item-height: 26px;
 $menu-bar-item-border-width: 1px;
 $menu-bar-item-text-color: #333;
-$menu-bar-item-spacing: 5px;
+$menu-bar-item-spacing: 10px;
 
 // MIXINS
 @mixin menu_bar_item{
@@ -53,6 +53,11 @@ $menu-bar-item-spacing: 5px;
         border-color: #888;
     }
     
+    *{
+        margin: 0;
+        padding: 0;
+    }
+    
     img{
         vertical-align: top;
     }
@@ -66,7 +71,7 @@ $menu-bar-item-spacing: 5px;
         color: $menu-bar-item-text-color;
     }
     // Hide the inputs without making them display none. IE doesn't click them if they are display none.
-    input{
+    input[type='submit']{
         position: absolute;
         z-index: -1;
         left: -9999px;
