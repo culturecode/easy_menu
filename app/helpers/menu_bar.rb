@@ -28,15 +28,25 @@ class MenuBar
   end
   
   def menu_bar_item(content, options = {})
+    create_menu_bar_item(MenuBarItem, content, options = {})
+  end
+
+  def submit_button(content, options = {})
+    create_menu_bar_item(SubmitButton, content, options = {})
+  end
+
+  def to_s
+    @template.content_tag :ul, @menu_bar_items.collect(&:to_s).join.html_safe, html_options
+  end
+
+  private
+  
+  def create_menu_bar_item(klass, content, options = {})
     options.merge!(:grouped => @grouped) # If we're in a grouped context, pass that information to the menu bar item
-    mbi = MenuBarItem.new(@template, content, options)
+    mbi = klass.new(@template, content, options)
     @menu_bar_items << mbi
 
     return mbi
-  end
-  
-  def to_s
-    @template.content_tag :ul, @menu_bar_items.collect(&:to_s).join.html_safe, html_options
   end
   
   def html_options
@@ -60,13 +70,19 @@ class MenuBar
     end
     
     def to_s
-      @template.content_tag :li, @content, wrapper_options do
-        @template.content_tag :div, @content, html_options
-      end
+      wrap_content(@content)
     end
     
     def selected(condition = :unset)
       @options[:selected] = (condition == :unset ? true : condition)
+    end
+    
+    private
+    
+    def wrap_content(content)
+      @template.content_tag :li, content, wrapper_options do
+        @template.content_tag :div, content, html_options
+      end
     end
     
     def wrapper_options
@@ -88,6 +104,20 @@ class MenuBar
       html_opts[:class] << SELECTED_CLASS if @options[:selected]
       html_opts[:class] = html_opts[:class].compact.join(' ')      
       
+      return html_opts
+    end
+  end
+  
+  class SubmitButton < MenuBarItem
+    private
+    
+    def wrap_content(content)
+      super @template.label_tag{ @template.submit_tag(content) + " " + content }
+    end
+    
+    def html_options
+      html_opts = super
+      html_opts[:class] << " submit_button"
       return html_opts
     end
   end
