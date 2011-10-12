@@ -93,7 +93,8 @@ $menu-bar-font: bold 12px 'Arial', 'sans-serif';
     height: $menu-bar-height;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
-    box-sizing: border-box;    
+    box-sizing: border-box;
+    margin: 0;
 }
 
 // STYLES
@@ -109,6 +110,7 @@ $menu-bar-font: bold 12px 'Arial', 'sans-serif';
         vertical-align: top;
         margin: 0 $menu-bar-item-spacing 0 0;        
 
+        &.first_group_item + .grouped,
         &.grouped + .grouped{
             margin-left: -$menu-bar-item-spacing - $menu-bar-item-border-width;
         }

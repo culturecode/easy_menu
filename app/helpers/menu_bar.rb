@@ -7,6 +7,7 @@ class MenuBar
   
   SELECTED_CLASS = 'selected'
   GROUPED_CLASS = 'grouped'
+  FIRST_GROUP_ITEM_CLASS = 'first_group_item'
   
   def initialize(template, options = {})
     @template = template
@@ -21,6 +22,7 @@ class MenuBar
   
   def group
     @grouped = true
+    @first_group_item = true
     yield self
     return self
   ensure
@@ -46,7 +48,8 @@ class MenuBar
   private
   
   def create_menu_bar_item(klass, content, options = {})
-    options.merge!(:grouped => @grouped) # If we're in a grouped context, pass that information to the menu bar item
+    options.merge!(:grouped => @grouped, :first_group_item => @first_group_item) # If we're in a grouped context, pass that information to the menu bar item
+    @first_group_item = false # Any group items are no longer first after we have read this value
     mbi = klass.new(@template, content, options)
     @menu_bar_items << mbi
 
@@ -91,7 +94,11 @@ class MenuBar
 
       # Set up the css class
       wrapper_opts[:class] = [MENU_BAR_CONTENT_CLASS, wrapper_opts[:class]]
-      wrapper_opts[:class] << GROUPED_CLASS if @options[:grouped]
+      if @options[:first_group_item]
+        wrapper_opts[:class] << FIRST_GROUP_ITEM_CLASS 
+      elsif @options[:grouped]
+        wrapper_opts[:class] << GROUPED_CLASS
+      end
       wrapper_opts[:class] = wrapper_opts[:class].compact.join(' ')
 
       return wrapper_opts      
