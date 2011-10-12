@@ -28,15 +28,15 @@ class MenuBar
   end
 
   def menu_bar_content(content, options = {})
-    create_menu_bar_item(MenuBarContent, content, options = {})
+    create_menu_bar_item(MenuBarContent, content, options)
   end
   
   def menu_bar_item(content, options = {})
-    create_menu_bar_item(MenuBarItem, content, options = {})
+    create_menu_bar_item(MenuBarItem, content, options)
   end
 
   def menu_bar_input(content, options = {})
-    create_menu_bar_item(MenuBarInput, content, options = {})
+    create_menu_bar_item(MenuBarInput, content, options)
   end
 
   def to_s
@@ -90,23 +90,12 @@ class MenuBar
       wrapper_opts = @options[:wrapper_options] || {}
 
       # Set up the css class
-      wrapper_opts[:class] = [MENU_BAR_CONTENT_CLASS]
+      wrapper_opts[:class] = [MENU_BAR_CONTENT_CLASS, wrapper_opts[:class]]
       wrapper_opts[:class] << GROUPED_CLASS if @options[:grouped]
       wrapper_opts[:class] = wrapper_opts[:class].compact.join(' ')
 
       return wrapper_opts      
     end
-    
-    def html_options
-      html_opts = @options[:html_options] || {}
-
-      # Set up the css class
-      html_opts[:class] = [MENU_BAR_ITEM_CLASS]
-      html_opts[:class] << SELECTED_CLASS if @options[:selected]
-      html_opts[:class] = html_opts[:class].compact.join(' ')      
-      
-      return html_opts
-    end    
   end
 
   
@@ -116,6 +105,17 @@ class MenuBar
     def wrap_content(content)
       super(@template.content_tag :div, content, html_options)
     end
+    
+    def html_options
+      html_opts = @options[:html_options] || {}
+
+      # Set up the css class
+      html_opts[:class] = [MENU_BAR_ITEM_CLASS, html_opts[:class]]
+      html_opts[:class] << SELECTED_CLASS if @options[:selected]
+      html_opts[:class] = html_opts[:class].compact.join(' ')      
+      
+      return html_opts
+    end        
   end
   
   class MenuBarInput < MenuBarItem

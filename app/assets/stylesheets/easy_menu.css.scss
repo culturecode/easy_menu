@@ -65,6 +65,9 @@ $menu-bar-font: bold 12px 'Arial', 'sans-serif';
 @mixin menu_bar_item_hover{
     &:hover{
         border-color: #888;
+        // Make the button border appear even when in a group by popping the button up above its siblings
+        z-index: 1;
+        position: relative;
     }
 }
 @mixin menu_bar_item_pressed{
