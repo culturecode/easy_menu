@@ -94,11 +94,16 @@ class MenuBar
 
       # Set up the css class
       wrapper_opts[:class] = [MENU_BAR_CONTENT_CLASS, wrapper_opts[:class]]
+      
+      # Either you are the first group item, or you a group item
+      # This let's us determine the start of the group and prevents
+      # it from mashing into the previous group
       if @options[:first_group_item]
         wrapper_opts[:class] << FIRST_GROUP_ITEM_CLASS 
       elsif @options[:grouped]
         wrapper_opts[:class] << GROUPED_CLASS
       end
+      
       wrapper_opts[:class] = wrapper_opts[:class].compact.join(' ')
 
       return wrapper_opts      
