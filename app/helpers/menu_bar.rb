@@ -4,6 +4,8 @@ class MenuBar
   MENU_BAR_CLASS = 'menu_bar'
   MENU_BAR_CONTENT_CLASS = 'menu_bar_content'
   MENU_BAR_ITEM_CLASS = 'menu_bar_item'
+  MENU_CLASS = 'menu'
+  MENU_ITEM_CLASS = 'menu_item'
   
   SELECTED_CLASS = 'selected'
   GROUPED_CLASS = 'grouped'
@@ -13,7 +15,7 @@ class MenuBar
     @template = template
     @options = options
 
-    @menu_bar_items = []
+    @menu_bar_content = []
     
     if block_given?
       yield self
@@ -30,30 +32,55 @@ class MenuBar
   end
 
   def menu_bar_content(content, options = {})
-    create_menu_bar_item(MenuBarContent, content, options)
+    initialize_options(options)
+
+    mbc = MenuBarContent.new(@template, content, options)
+    @menu_bar_content << mbc
+
+    return mbc
   end
   
   def menu_bar_item(content, options = {})
-    create_menu_bar_item(MenuBarItem, content, options)
+    initialize_options(options)
+    
+    mbi = MenuBarItem.new @template, content, options
+    @menu_bar_content << MenuBarContent.new(@template, mbi, options)
+    
+    return mbi
   end
 
   def menu_bar_input(content, options = {})
-    create_menu_bar_item(MenuBarInput, content, options)
+    initialize_options(options)
+    
+    mbin = MenuBarInput.new @template, content, options
+    mbi = MenuBarItem.new @template, mbin, options
+    @menu_bar_content << MenuBarContent.new(@template, mbi, options)
+    
+    return mbi
+  end
+
+  def menu(button_text, options = {})
+    initialize_options(options)
+    
+    mbi = MenuBarItem.new(@template, button_text, options)
+    m = Menu.new(@template, options)
+
+    yield m if block_given?
+    
+    @menu_bar_content << MenuBarContent.new(@template, [mbi, m], options)
+    
+    return m
   end
 
   def to_s
-    @template.content_tag :ul, @menu_bar_items.collect(&:to_s).join.html_safe, html_options
+    @template.content_tag :ul, @menu_bar_content.collect(&:to_s).join.html_safe, html_options
   end
 
   private
   
-  def create_menu_bar_item(klass, content, options = {})
+  def initialize_options(options)
     options.merge!(:grouped => @grouped, :first_group_item => @first_group_item) # If we're in a grouped context, pass that information to the menu bar item
-    @first_group_item = false # Any group items are no longer first after we have read this value
-    mbi = klass.new(@template, content, options)
-    @menu_bar_items << mbi
-
-    return mbi
+    @first_group_item = false # Any group items are no longer first after we have read this value    
   end
   
   def html_options
@@ -72,11 +99,12 @@ class MenuBar
     def initialize(template, content, options = {})
       @template = template
       @content = content
-      @options = options
+      @options = options      
     end
     
     def to_s
-      wrap_content(@content)
+      # Treat the content as an array so we can pass multiple objects as content, e.g. when rending a menu
+      wrap_content(Array(@content).collect(&:to_s).join.html_safe)
     end
     
     def selected(condition = :unset)
@@ -115,7 +143,7 @@ class MenuBar
     private
     
     def wrap_content(content)
-      super(@template.content_tag :div, content, html_options)
+      @template.content_tag :div, content, html_options
     end
     
     def html_options
@@ -127,14 +155,69 @@ class MenuBar
       html_opts[:class] = html_opts[:class].compact.join(' ')      
       
       return html_opts
-    end        
+    end   
   end
   
   class MenuBarInput < MenuBarItem
     private
     
     def wrap_content(content)
-      super @template.label_tag(nil, content)
+      @template.label_tag nil, content
     end    
   end
+  
+  class Menu
+    def initialize(template, options = {})
+      @template = template
+      @options = options
+      @menu_items = []
+    end
+    
+    def menu_item(content, options = {})
+      mi = MenuItem.new(@template, content, options)
+      @menu_items << mi
+      
+      return mi
+    end
+    
+    def to_s
+      @template.content_tag :ul, @menu_items.collect(&:to_s).join.html_safe, html_options unless @menu_items.empty?
+    end
+    
+    private
+    
+    def html_options
+      html_opts = @options[:html_options] || {}
+
+      # Set up the css class
+      html_opts[:class] = [MENU_CLASS, html_opts[:class]]
+      html_opts[:class] = html_opts[:class].compact.join(' ')      
+      
+      return html_opts
+    end
+  end
+  
+  class MenuItem
+    def initialize(template, content, options = {})
+      @template = template
+      @content = content
+      @options = options      
+    end
+    
+    def to_s
+      @template.content_tag :li, @content, html_options
+    end
+    
+    private
+    
+    def html_options
+      html_opts = @options[:html_options] || {}
+
+      # Set up the css class
+      html_opts[:class] = [MENU_ITEM_CLASS, html_opts[:class]]
+      html_opts[:class] = html_opts[:class].compact.join(' ')
+      
+      return html_opts
+    end
+  end  
 end

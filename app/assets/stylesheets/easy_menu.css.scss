@@ -119,7 +119,14 @@ $menu-bar-font: bold 12px 'Arial', 'sans-serif';
         .menu_bar_item{
             @include menu_bar_item;
         }
+        .menu{
+            list-style: none;
+            
+            .menu_item{
+            }
+        }
         
+        // INPUTS IN THE MENU
         input[type=search]{
             @include text-field;
             -webkit-appearance: textfield;
@@ -143,7 +150,7 @@ $menu-bar-font: bold 12px 'Arial', 'sans-serif';
                 text-shadow: none;
                 padding: 0.4em;
             }
-        }
+        }        
     }
 }
 .menu_bar.toggle_menu{
