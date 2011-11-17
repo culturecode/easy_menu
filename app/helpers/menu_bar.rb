@@ -7,7 +7,10 @@ class MenuBar
   MENU_CLASS = 'menu'
   MENU_ITEM_CLASS = 'menu_item'
   
+  CLICK_BLOCKER_CLASS = 'click_blocker'
+  
   SELECTED_CLASS = 'selected'
+  DISABLED_CLASS = 'disabled'
   GROUPED_CLASS = 'grouped'
   FIRST_GROUP_ITEM_CLASS = 'first_group_item'
   
@@ -140,10 +143,17 @@ class MenuBar
 
   
   class MenuBarItem < MenuBarContent
+    
+    def disabled(state = true)
+      @options[:disabled] = state
+    end
+    
     private
     
     def wrap_content(content)
-      @template.content_tag :div, content, html_options
+      output = @template.content_tag :div, content, html_options
+      output << @template.content_tag(:div, '', :class => CLICK_BLOCKER_CLASS) if @options[:disabled]
+      return output
     end
     
     def html_options
@@ -152,10 +162,11 @@ class MenuBar
       # Set up the css class
       html_opts[:class] = [MENU_BAR_ITEM_CLASS, html_opts[:class]]
       html_opts[:class] << SELECTED_CLASS if @options[:selected]
+      html_opts[:class] << DISABLED_CLASS if @options[:disabled]
       html_opts[:class] = html_opts[:class].compact.join(' ')      
       
       return html_opts
-    end   
+    end
   end
   
   class MenuBarInput < MenuBarItem

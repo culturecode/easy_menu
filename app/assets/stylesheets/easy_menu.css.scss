@@ -1,16 +1,18 @@
 /*
- * This is a manifest file that'll automatically include all the stylesheets available in this directory
- * and any sub-directories. You're free to add application-wide styles to this file and they'll appear at
- * the top of the compiled file, but it's generally better to create a new file per style scope.
- *= require_self
- *= require_tree . 
+* This is a manifest file that'll automatically include all the stylesheets available in this directory
+* and any sub-directories. You're free to add application-wide styles to this file and they'll appear at
+* the top of the compiled file, but it's generally better to create a new file per style scope.
+*= require_self
+*= require_tree . 
 */
 
 // VARIABLES
 $menu-bar-item-horizontal-padding: 7px;
 $menu-bar-item-height: 26px;
+$menu-bar-item-border-color: #BBBBBB #BBBBBB #888888;
 $menu-bar-item-border-width: 1px;
 $menu-bar-item-text-color: #333;
+$menu-bar-item-disabled-text-color: #888;
 $menu-bar-item-spacing: 10px;
 $menu-bar-height: 2*$menu-bar-item-border-width + $menu-bar-item-height;
 $menu-bar-font: bold 12px 'Arial', 'sans-serif';
@@ -20,6 +22,7 @@ $menu-bar-font: bold 12px 'Arial', 'sans-serif';
     @include menu_bar_item_base;
     @include menu_bar_item_hover;
     @include menu_bar_item_pressed;
+    @include menu_bar_item_disabled;
 }
 @mixin menu_bar_item_base{
     background: #dddede;
@@ -29,21 +32,21 @@ $menu-bar-font: bold 12px 'Arial', 'sans-serif';
     background: linear-gradient(top, #fefefe 0%,#dddede 100%);
     background-image: -ms-linear-gradient(bottom, #fefefe 0%, #dddede 100%);
 
-    border-color: #BBBBBB #BBBBBB #888888;
+    border-color: $menu-bar-item-border-color;
     border-radius: 2px 2px 2px 2px;
     border-style: solid;
-    border-width: 1px;
+    border-width: $menu-bar-item-border-width;
     font: $menu-bar-font;
     line-height: $menu-bar-item-height;
     padding: 0 $menu-bar-item-horizontal-padding;
     white-space: nowrap;
     text-shadow: 0 1px 1px white;
-    
+
     *{
         margin: 0;
         padding: 0;
     }
-    
+
     img{
         vertical-align: top;
     }
@@ -56,6 +59,7 @@ $menu-bar-font: bold 12px 'Arial', 'sans-serif';
     a:link, a:visited{
         color: $menu-bar-item-text-color;
     }
+
     // Hide the inputs without making them display none. IE doesn't click them if they are display none.
     input[type='submit']{
         position: absolute;
@@ -78,14 +82,20 @@ $menu-bar-font: bold 12px 'Arial', 'sans-serif';
         background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f0f0f0), color-stop(100%,#cccdcd));
         background: -webkit-linear-gradient(top, #f0f0f0 0%,#cccdcd 100%);
         background: linear-gradient(top, #f0f0f0 0%,#cccdcd 100%);                
-        
+
         box-shadow: 0 0 5px rgba(0,0,0,0.5) inset;
-        
+
         // Make the button border appear even when in a group by popping the button up above its siblings
         z-index: 1;
         position: relative;
         border-color: #888;
     }    
+}
+
+@mixin menu_bar_item_disabled{
+    &.disabled a{
+        color: $menu-bar-item-disabled-text-color;
+    } 
 }
 
 @mixin text-field{
@@ -109,7 +119,7 @@ $menu-bar-font: bold 12px 'Arial', 'sans-serif';
     .menu_bar_content{
         display: inline-block;
         vertical-align: top;
-        margin: 0 $menu-bar-item-spacing 0 0;        
+        margin: 0 $menu-bar-item-spacing 0 0;
 
         &.first_group_item + .grouped,
         &.grouped + .grouped{
@@ -121,11 +131,21 @@ $menu-bar-font: bold 12px 'Arial', 'sans-serif';
         }
         .menu{
             list-style: none;
-            
+
             .menu_item{
             }
         }
-        
+
+        // CLICK BLOCKER
+        position: relative; // So click blocker can fill the button area
+        .click_blocker{
+            height: 100%;
+            left: 0;
+            position: absolute;
+            top: 0;
+            width: 100%;            
+        }
+
         // INPUTS IN THE MENU
         input[type=search]{
             @include text-field;
