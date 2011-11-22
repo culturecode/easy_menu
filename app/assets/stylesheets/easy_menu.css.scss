@@ -9,7 +9,8 @@
 // VARIABLES
 $menu-bar-item-horizontal-padding: 7px;
 $menu-bar-item-height: 26px;
-$menu-bar-item-border-color: #BBBBBB #BBBBBB #888888;
+$menu-bar-item-border-color: #BBBBBB;
+$menu-bar-item-border-shadow-color: #888888;
 $menu-bar-item-border-width: 1px;
 $menu-bar-item-text-color: #333;
 $menu-bar-item-disabled-text-color: #888;
@@ -32,7 +33,7 @@ $menu-bar-font: bold 12px 'Arial', 'sans-serif';
     background: linear-gradient(top, #fefefe 0%,#dddede 100%);
     background-image: -ms-linear-gradient(bottom, #fefefe 0%, #dddede 100%);
 
-    border-color: $menu-bar-item-border-color;
+    border-color: $menu-bar-item-border-color $menu-bar-item-border-color $menu-bar-item-border-shadow-color;
     border-radius: 2px 2px 2px 2px;
     border-style: solid;
     border-width: $menu-bar-item-border-width;
@@ -41,6 +42,9 @@ $menu-bar-font: bold 12px 'Arial', 'sans-serif';
     padding: 0 $menu-bar-item-horizontal-padding;
     white-space: nowrap;
     text-shadow: 0 1px 1px white;
+    // Place the button above any nested menu
+    position: relative;
+    z-index: 1;
 
     *{
         margin: 0;
@@ -106,7 +110,42 @@ $menu-bar-font: bold 12px 'Arial', 'sans-serif';
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
     margin: 0;
+    padding: 0 $menu-bar-item-horizontal-padding;
 }
+
+
+$menu-item-vertical-padding: 0.5em;
+$menu-item-horizontal-padding: 1em;
+@mixin menu_item{
+    @include menu_item_base;
+    @include menu_item_hover;
+}
+
+@mixin menu_item_base{
+    white-space: nowrap;
+    font: $menu-bar-font;
+    padding: $menu-item-vertical-padding $menu-item-horizontal-padding;
+    
+    a{
+        color: $menu-bar-item-text-color;
+        padding: $menu-item-vertical-padding $menu-item-horizontal-padding;
+        margin: (-$menu-item-vertical-padding) (-$menu-item-horizontal-padding);
+        display: block;
+    }
+}
+@mixin menu_item_hover{    
+    a:hover{
+        color: white;
+        background: #94A6F4;
+        background: -moz-linear-gradient(top, #AFCDF6 0%, #94A6F4 100%);
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#AFCDF6), color-stop(100%,#94A6F4));
+        background: -webkit-linear-gradient(top, #AFCDF6 0%,#94A6F4 100%);
+        background: linear-gradient(top, #AFCDF6 0%,#94A6F4 100%);
+        background-image: -ms-linear-gradient(bottom, #AFCDF6 0%, #94A6F4 100%);
+    }
+}
+
+
 
 // STYLES
 .menu_bar{
@@ -129,12 +168,27 @@ $menu-bar-font: bold 12px 'Arial', 'sans-serif';
         .menu_bar_item{
             @include menu_bar_item;
         }
-        .menu{
-            list-style: none;
 
+        // MENUS
+        .menu{
+            background: none repeat scroll 0 0 white;
+            border: 1px solid $menu-bar-item-border-color;
+            border-radius: 0 0 2px 2px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+            list-style: none outside none;
+            margin-top: -1px;
+            padding: 0;
+            position: absolute;
+            display: none;
+            
             .menu_item{
+                @include menu_item;
             }
         }
+        &:hover .menu{
+            display: block;
+        }
+        
 
         // CLICK BLOCKER
         position: relative; // So click blocker can fill the button area
