@@ -17,7 +17,7 @@ $menu-bar-item-disabled-text-color: #888;
 $menu-bar-item-spacing: 10px;
 $menu-bar-height: 2*$menu-bar-item-border-width + $menu-bar-item-height;
 $menu-bar-font: bold 12px 'Arial', 'sans-serif';
-
+$menu-bar-item-zindex: 1;
 // MIXINS
 @mixin menu_bar_item{
     @include menu_bar_item_base;
@@ -44,7 +44,7 @@ $menu-bar-font: bold 12px 'Arial', 'sans-serif';
     text-shadow: 0 1px 1px white;
     // Place the button above any nested menu
     position: relative;
-    z-index: 1;
+    z-index: $menu-bar-item-zindex;
 
     *{
         margin: 0;
@@ -97,7 +97,7 @@ $menu-bar-font: bold 12px 'Arial', 'sans-serif';
 }
 
 @mixin menu_bar_item_disabled{
-    &.disabled a{
+    &.disabled, &.disabled a{
         color: $menu-bar-item-disabled-text-color;
     } 
 }
@@ -197,7 +197,8 @@ $menu-item-horizontal-padding: 1em;
             left: 0;
             position: absolute;
             top: 0;
-            width: 100%;            
+            width: 100%;
+            z-index: $menu-bar-item-zindex + 1;
         }
 
         // INPUTS IN THE MENU
