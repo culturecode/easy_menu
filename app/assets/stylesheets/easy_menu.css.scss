@@ -45,6 +45,7 @@ $menu-bar-item-zindex: 1;
     // Place the button above any nested menu
     position: relative;
     z-index: $menu-bar-item-zindex;
+    cursor: pointer;
 
     *{
         margin: 0;
