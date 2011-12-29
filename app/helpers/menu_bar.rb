@@ -135,6 +135,7 @@ class MenuBar
         wrapper_opts[:class] << GROUPED_CLASS
       end
       
+      wrapper_opts[:class] << SELECTED_CLASS if @options[:selected]
       wrapper_opts[:class] = wrapper_opts[:class].compact.join(' ')
 
       return wrapper_opts      
