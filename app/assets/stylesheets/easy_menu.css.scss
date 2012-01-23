@@ -134,8 +134,8 @@ $menu-item-horizontal-padding: 1em;
         display: block;
     }
 }
-@mixin menu_item_hover{    
-    a:hover{
+@mixin menu_item_hover {    
+    &.selected a, a:hover {
         color: white;
         background: #94A6F4;
         background: -moz-linear-gradient(top, #AFCDF6 0%, #94A6F4 100%);
