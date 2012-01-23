@@ -220,6 +220,10 @@ class MenuBar
       @template.content_tag :li, @content, html_options
     end
     
+    def selected(condition = :unset)
+      @options[:selected] = (condition == :unset ? true : condition)
+    end
+    
     private
     
     def html_options
@@ -227,6 +231,7 @@ class MenuBar
 
       # Set up the css class
       html_opts[:class] = [MENU_ITEM_CLASS, html_opts[:class]]
+      html_opts[:class] << SELECTED_CLASS if @options[:selected]
       html_opts[:class] = html_opts[:class].compact.join(' ')
       
       return html_opts
