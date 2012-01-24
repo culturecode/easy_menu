@@ -18,5 +18,17 @@ $(document).ready(function() {
     // Used by the above click handler to determine if the browser already submitted the form.
     $('form').submit(function() {
       $(this).addClass('submitting');
-    });                    
+    });
+    
+    // Allow users to open an close menus by clicking
+    $('.menu_bar_content.with_menu').removeClass('no_js');
+    $('.menu_bar_content.with_menu .menu_bar_item').click(function(){
+        var mbc = $(this).closest('.menu_bar_content');
+        $('.menu_bar_content.with_menu').not(mbc).removeClass('open');
+        mbc.toggleClass('open');
+        return false;
+    });
+    $('body').click(function(){
+        $('.menu_bar_content.with_menu').removeClass('open');
+    });
 });

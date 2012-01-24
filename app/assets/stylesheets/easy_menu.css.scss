@@ -30,6 +30,8 @@
     // MENU BAR ITEMS
     .menu_bar_item{
       @include menu_bar_item;
+      @include no-select;
+      @include no-drag;
     }
 
     // MENUS
@@ -48,7 +50,17 @@
         @include menu_item;
       }
     }
-    &.with_menu:hover{
+    &.with_menu {
+      .menu_bar_item .arrow{
+        background: url('/assets/arrows.png') center 87px;
+        display: inline-block;
+        margin-left: 3px;
+        height: 10px;
+        width: 10px;
+        vertical-align: middle;
+      }
+    }
+    &.with_menu.no_js:hover, &.with_menu.open{
       .menu_bar_item {
         background: white;
         border-bottom: none;

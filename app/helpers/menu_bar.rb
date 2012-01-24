@@ -3,8 +3,9 @@ class MenuBar
   
   MENU_BAR_CLASS = 'menu_bar'
   MENU_BAR_CONTENT_CLASS = 'menu_bar_content'
-  MENU_BAR_CONTENT_WITH_MENU_CLASS = 'with_menu'
+  MENU_BAR_CONTENT_WITH_MENU_CLASS = 'with_menu no_js' # no_js class will be removed by browser if it has js, disabling the hover behaviour and enabling a click behaviour
   MENU_BAR_ITEM_CLASS = 'menu_bar_item'
+  MENU_BAR_ITEM_ARROW_CLASS = 'arrow'
   MENU_CLASS = 'menu'
   MENU_ITEM_CLASS = 'menu_item'
   
@@ -66,7 +67,7 @@ class MenuBar
   def menu(button_text, options = {})
     initialize_options(options)
 
-    mbi = MenuBarItem.new(@template, button_text, options)
+    mbi = MenuBarItem.new(@template, button_text + @template.content_tag(:span, '', :class => MENU_BAR_ITEM_ARROW_CLASS), options)
     m = Menu.new(@template, options)
 
     yield m if block_given?

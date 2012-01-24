@@ -12,6 +12,16 @@ $menu-bar-font: bold 12px 'Arial', 'sans-serif';
 $menu-bar-item-zindex: 1;
 
 // MIXINS
+@mixin no-select{
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;    
+}
+@mixin no-drag{
+    -moz-user-drag: none;
+    -webkit-user-drag: none;
+    user-drag: none;  
+}
 @mixin menu_bar_item{
   @include menu_bar_item_base;
   @include menu_bar_item_hover;
