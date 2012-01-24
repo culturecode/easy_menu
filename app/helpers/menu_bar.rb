@@ -3,6 +3,7 @@ class MenuBar
   
   MENU_BAR_CLASS = 'menu_bar'
   MENU_BAR_CONTENT_CLASS = 'menu_bar_content'
+  MENU_BAR_CONTENT_WITH_MENU_CLASS = 'with_menu'
   MENU_BAR_ITEM_CLASS = 'menu_bar_item'
   MENU_CLASS = 'menu'
   MENU_ITEM_CLASS = 'menu_item'
@@ -64,13 +65,14 @@ class MenuBar
 
   def menu(button_text, options = {})
     initialize_options(options)
-    
+
     mbi = MenuBarItem.new(@template, button_text, options)
     m = Menu.new(@template, options)
 
     yield m if block_given?
     
-    @menu_bar_content << MenuBarContent.new(@template, [mbi, m], options)
+    # We give the menu bar content a special class so we can treat its contents differently than one without a menu inside
+    @menu_bar_content << MenuBarContent.new(@template, [mbi, m], options.merge(:wrapper_options => {:class => MENU_BAR_CONTENT_WITH_MENU_CLASS}))
     
     return m
   end
