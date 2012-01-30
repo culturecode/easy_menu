@@ -10,6 +10,7 @@ $menu-bar-item-spacing: 10px;
 $menu-bar-height: 2*$menu-bar-item-border-width + $menu-bar-item-height;
 $menu-bar-font: bold 12px 'Arial', 'sans-serif';
 $menu-bar-item-zindex: 1;
+$menu-bar-separator-height: 20px;
 
 // MIXINS
 @mixin no-select{
@@ -56,9 +57,11 @@ $menu-bar-item-zindex: 1;
   }
 
   img{
-    vertical-align: top;
+    vertical-align: middle;
+    position: relative;
+    bottom: 1px;
   }
-
+  
   a, label{
     text-decoration: none;        
     margin: -$menu-bar-item-horizontal-padding;
@@ -79,7 +82,7 @@ $menu-bar-item-zindex: 1;
   &:hover{
     border-color: #888;
     // Make the button border appear even when in a group by popping the button up above its siblings
-    z-index: 1;
+    z-index: $menu-bar-item-zindex + 1;
     position: relative;
   }
 }
@@ -94,7 +97,7 @@ $menu-bar-item-zindex: 1;
     box-shadow: 0 0 5px rgba(0,0,0,0.5) inset;
 
     // Make the button border appear even when in a group by popping the button up above its siblings
-    z-index: 1;
+    z-index: $menu-bar-item-zindex + 1;
     position: relative;
     border-color: #888;
   }    
@@ -135,6 +138,7 @@ $menu-item-horizontal-padding: 2em;
     padding: $menu-item-vertical-padding $menu-item-horizontal-padding;
     margin: (-$menu-item-vertical-padding) (-$menu-item-horizontal-padding);
     display: block;
+    text-decoration: none;
   }
 }
 @mixin menu_item_hover {

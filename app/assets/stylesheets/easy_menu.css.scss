@@ -16,22 +16,48 @@
   list-style: none;
   height: $menu-bar-height;
 
+  // MENU BAR_GROUP
+  .menu_bar_group{
+    padding: 0;
+
+    .menu_bar_content{
+      margin-left: -$menu-bar-item-spacing - $menu-bar-item-border-width;
+    }
+    
+    .menu_bar_content:first-child{
+      margin-left: 0;
+    }
+    .menu_bar_content:last-child{
+      margin-right: 0;
+    }    
+  }
+  
+  // MENU BAR CONTENT
   .menu_bar_content{
     display: inline-block;
     vertical-align: top;
     margin: 0 $menu-bar-item-spacing 0 0;
 
-    &.first_group_item + .grouped,
-    &.grouped + .grouped{
-      margin-left: -$menu-bar-item-spacing - $menu-bar-item-border-width;
+    // CONTENTS
+    form{
+      display: inline-block;
     }
-
 
     // MENU BAR ITEMS
     .menu_bar_item{
       @include menu_bar_item;
       @include no-select;
       @include no-drag;
+    }
+
+    // MENU BAR SEPARATOR
+    .menu_bar_separator{
+      background-color: #C3C3C3;
+      border-right: 1px solid #F7F7F7;
+      display: inline-block;
+      height: $menu-bar-separator-height;
+      margin: ($menu-bar-item-height - $menu-bar-separator-height)/2 0;
+      padding-right: 1px;
     }
 
     // MENUS
@@ -46,9 +72,26 @@
       position: absolute;
       display: none;
 
-      .menu_item{
-        @include menu_item;
+      .menu_group_title{
+         @include menu_item_base;
+          background: none repeat scroll 0 0 #EEEEEE;
+          color: #888888;
+          font-weight: bold;
+          margin: 0.5em 0;
       }
+      .menu_group{
+        padding: 0;
+        margin: 0;
+      }
+
+      .menu_content{
+        display: block;
+
+        .menu_item{
+          @include menu_item;
+        }
+      }
+
     }
     &.with_menu {
       .menu_bar_item .arrow{
@@ -67,8 +110,8 @@
         border-radius: 2px 2px 0 0;
         border-color: $menu-bar-item-border-color;
       }
-      
-      z-index: $menu-bar-item-zindex + 1; // Position all the contents of this menu_content above any other menu bar item
+
+      z-index: $menu-bar-item-zindex + 2; // Position all the contents of this menu_content above any other menu bar item
       .menu {
         display: block;
       }
@@ -82,7 +125,7 @@
       position: absolute;
       top: 0;
       width: 100%;
-      z-index: $menu-bar-item-zindex + 1;
+      z-index: $menu-bar-item-zindex + 3;
     }
 
     // INPUTS IN THE MENU
