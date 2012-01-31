@@ -11,6 +11,9 @@ $menu-bar-height: 2*$menu-bar-item-border-width + $menu-bar-item-height;
 $menu-bar-font: bold 12px 'Arial', 'sans-serif';
 $menu-bar-item-zindex: 1;
 $menu-bar-separator-height: 20px;
+$menu-vertical-padding: 0.2em;
+$menu-item-vertical-padding: 0.4em;
+$menu-item-horizontal-padding: 2em;
 
 // MIXINS
 @mixin no-select{
@@ -120,9 +123,6 @@ $menu-bar-separator-height: 20px;
   padding: 0 $menu-bar-item-horizontal-padding;
 }
 
-
-$menu-item-vertical-padding: 0.5em;
-$menu-item-horizontal-padding: 2em;
 @mixin menu_item{
   @include menu_item_base;
   @include menu_item_hover;

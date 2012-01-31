@@ -68,28 +68,33 @@
       box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
       list-style: none outside none;
       margin-top: -1px;
-      padding: 0;
+      padding: $menu-vertical-padding 0;
       position: absolute;
       display: none;
-
-      .menu_group_title{
-         @include menu_item_base;
-          background: none repeat scroll 0 0 #EEEEEE;
-          color: #888888;
-          font-weight: bold;
-          margin: 0.5em 0;
-      }
-      .menu_group{
-        padding: 0;
-        margin: 0;
-      }
 
       .menu_content{
         display: block;
 
         .menu_item{
           @include menu_item;
+        }        
+        .menu_group_title{
+          @include menu_item_base;
+          background: none repeat scroll 0 0 #EEEEEE;
+          color: #888888;
+          font-weight: bold;
+          margin: $menu-item-vertical-padding 0;
         }
+        .menu_group{
+          padding: 0;
+          margin: 0;
+        }
+      }
+
+      // Subsequent menu groups
+      .menu_content + .menu_content .menu_group_title{
+        border-top: 1px solid #E0E0E0;
+        margin-top: $menu-item-vertical-padding * 2;
       }
 
     }
