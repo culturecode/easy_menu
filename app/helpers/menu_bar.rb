@@ -80,8 +80,11 @@ class MenuBar
 
     yield m if block_given?
 
+    # Init content with menu options
+    options = options.merge(:wrapper_options => options[:wrapper_options].merge(:class => MENU_BAR_CONTENT_WITH_MENU_CLASS))
+
     # We give the menu bar content a special class so we can treat its contents differently than one without a menu inside
-    @menu_bar_content << MenuBarContent.new(@template, [mbi, m], options.merge(:wrapper_options => {:class => MENU_BAR_CONTENT_WITH_MENU_CLASS}))
+    @menu_bar_content << MenuBarContent.new(@template, [mbi, m], options)
 
     return m
   end
@@ -100,12 +103,13 @@ class MenuBar
   private
 
   def initialize_options(options)
-    options.merge!(:grouped => @grouped, :first_group_item => @first_group_item) # If we're in a grouped context, pass that information to the menu bar item
-    @first_group_item = false # Any group items are no longer first after we have read this value    
+    options[:html_options] ||= {}
+    options[:wrapper_options] ||= {}
+    return options
   end
 
   def html_options
-    html_opts = @options.dup
+    html_opts = @options
 
     # Set up the css class
     css_class = [MENU_BAR_CLASS, @options[:class]]
@@ -125,7 +129,7 @@ class MenuBar
     def initialize(template, content, options = {})
       @template = template
       @content = content
-      @options = options      
+      @options = options
     end
 
     def to_s
@@ -140,7 +144,7 @@ class MenuBar
     end
 
     def html_options
-      html_opts = @options[:wrapper_options] || {}
+      html_opts = @options[:wrapper_options] ? @options[:wrapper_options].dup : {}
 
       # Set up the css class
       html_opts[:class] = [css_class, html_opts[:class]]      
@@ -168,7 +172,7 @@ class MenuBar
     end
     
     def html_options
-      html_opts = @options[:html_options] || {}
+      html_opts = @options[:html_options] ? @options[:html_options].dup : {}
 
       # Set up the css class
       html_opts[:class] = [css_class, html_opts[:class]]      
@@ -187,7 +191,7 @@ class MenuBar
     private
     
     def html_options
-      html_opts = @options.dup
+      html_opts = @options
 
       # Set up the css class
       css_class = [MENU_BAR_GROUP_CLASS, @options[:class]]
@@ -221,7 +225,7 @@ class MenuBar
   class Menu
     def initialize(template, options = {})
       @template = template
-      @options = options
+      @options = options.dup
       @menu_content = []
 
       yield self if block_given?
@@ -239,10 +243,7 @@ class MenuBar
     end
 
     def menu_content(content, options = {})
-      mi = MenuItem.new(@template, content, options)
-      @menu_content << MenuContent.new(@template, mi, options)
-
-      return mi
+      @menu_content << MenuContent.new(@template, content, options)
     end    
 
     def menu_item(content, options = {})
@@ -266,7 +267,7 @@ class MenuBar
     private
 
     def html_options
-      html_opts = @options[:html_options] || {}
+      html_opts = @options[:html_options] ? @options[:html_options].dup : {}
 
       # Set up the css class
       html_opts[:class] = [MENU_CLASS, html_opts[:class]]
@@ -280,7 +281,7 @@ class MenuBar
     private
 
     def html_options
-      html_opts = @options[:html_options] || {}
+      html_opts = @options[:html_options] ? @options[:html_options].dup : {}
 
       # Set up the css class
       html_opts[:class] = [MENU_GROUP_CLASS, html_opts[:class]]
