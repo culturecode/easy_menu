@@ -62,11 +62,11 @@
     // MENUS
     .menu{
       background: none repeat scroll 0 0 white;
-      border: 1px solid $menu-bar-item-border-color;
+      border: $menu-border-width solid $menu-bar-item-border-color;
       border-radius: 0 0 2px 2px;
       box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
       list-style: none outside none;
-      margin-top: -1px;
+      margin-top: -$menu-border-width - $menu-bar-item-border-width; // Make the button appear to be part of the clicked trigger button
       padding: $menu-vertical-padding 0;
       position: absolute;
       display: none;
@@ -110,9 +110,10 @@
     &.with_menu.no_js:hover, &.with_menu.open{
       .menu_bar_item {
         background: white;
-        border-bottom: none;
         border-radius: 2px 2px 0 0;
         border-color: $menu-bar-item-border-color;
+        border-bottom: none;
+        margin-bottom: $menu-bar-item-border-width; // Make up for the loss of border so the button doesn't shift
       }
 
       z-index: $menu-bar-item-zindex + 2; // Position all the contents of this menu_content above any other menu bar item
