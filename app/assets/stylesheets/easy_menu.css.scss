@@ -73,6 +73,8 @@
 
       .menu_content{
         display: block;
+        padding: 0;
+        margin: 0;
 
         .menu_item{
           @include menu_item;
@@ -83,11 +85,18 @@
           color: #888888;
           font-weight: bold;
           margin: $menu-item-vertical-padding 0;
+          white-space: nowrap;
         }
         .menu_group{
           padding: 0;
           margin: 0;
         }
+
+        .menu_separator{
+          border-top: 1px solid #E0E0E0;
+          margin: $menu-item-vertical-padding 0;
+        }
+        
       }
 
       // Subsequent menu groups
@@ -122,9 +131,9 @@
       }
     }
 
-    // CLICK BLOCKER
+    // CLICK BLOCKER (only appears if the element is disabled)
     position: relative; // So click blocker can fill the button area
-    .click_blocker{
+    .disabled + .click_blocker{
       height: 100%;
       left: 0;
       position: absolute;

@@ -1,6 +1,7 @@
 // VARIABLES
 $menu-bar-item-horizontal-padding: 7px;
 $menu-bar-item-height: 26px;
+$menu-bar-item-min-width: $menu-bar-item-height;
 $menu-bar-item-border-color: #BBBBBB;
 $menu-bar-item-border-shadow-color: #888888;
 $menu-bar-item-border-width: 1px;
@@ -47,9 +48,13 @@ $menu-item-horizontal-padding: 2em;
   border-width: $menu-bar-item-border-width;
   font: $menu-bar-font;
   line-height: $menu-bar-item-height;
+  min-width: $menu-bar-item-min-width - 2*$menu-bar-item-horizontal-padding;
   padding: 0 $menu-bar-item-horizontal-padding;
   white-space: nowrap;
+  text-align: center;
   text-shadow: 0 1px 1px white;
+  display: inline-block;
+  
   // Place the button above any nested menu
   position: relative;
   z-index: $menu-bar-item-zindex;
@@ -66,10 +71,11 @@ $menu-item-horizontal-padding: 2em;
     bottom: 1px;
   }
   
-  a, label{
+  > a, > label{
     text-decoration: none;        
-    margin: -$menu-bar-item-horizontal-padding;
-    padding: $menu-bar-item-horizontal-padding;
+    // Make the a fill the hoverable area of the button so clicking anywhere triggers the link
+    margin: -$menu-bar-item-horizontal-padding (-$menu-bar-item-horizontal-padding - $menu-bar-item-border-width);
+    padding: $menu-bar-item-horizontal-padding ($menu-bar-item-horizontal-padding + $menu-bar-item-border-width);
   }
   a:link, a:visited{
     color: $menu-bar-item-text-color;
@@ -134,7 +140,7 @@ $menu-item-horizontal-padding: 2em;
   font: $menu-bar-font;
   padding: $menu-item-vertical-padding $menu-item-horizontal-padding;
 
-  a{
+  a {
     color: $menu-bar-item-text-color;
     padding: $menu-item-vertical-padding $menu-item-horizontal-padding;
     margin: (-$menu-item-vertical-padding) (-$menu-item-horizontal-padding);

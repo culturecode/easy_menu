@@ -8,6 +8,7 @@ class MenuBar
   MENU_BAR_CONTENT_WITH_MENU_CLASS = 'with_menu no_js' # no_js class will be removed by browser if it has js, disabling the hover behaviour and enabling a click behaviour
   MENU_BAR_ITEM_CLASS = 'menu_bar_item'
   MENU_BAR_ITEM_ARROW_CLASS = 'arrow'
+  MENU_BAR_INPUT_CLASS = 'menu_bar_input'
   MENU_BAR_SEPARATOR_CLASS = 'menu_bar_separator'
   MENU_CLASS = 'menu'
   MENU_CONTENT_CLASS = 'menu_content'
@@ -24,11 +25,14 @@ class MenuBar
   FIRST_GROUP_ITEM_CLASS = 'first_group_item'
   LAST_GROUP_ITEM_CLASS = 'last_group_item'
 
+  class_attribute :css_class
+  self.css_class = MENU_BAR_CLASS
+
   def initialize(template, options = {})
     @template = template
     @options = options
 
-    @menu_bar_content = []
+    @content = []
 
     yield self if block_given?
   end
@@ -39,7 +43,7 @@ class MenuBar
 
     yield mbg if block_given?
     
-    @menu_bar_content << mbc
+    @content << mbc
 
     return mbg
   end
@@ -48,7 +52,7 @@ class MenuBar
     initialize_options(options)
 
     mbc = MenuBarContent.new(@template, content, options)
-    @menu_bar_content << mbc
+    @content << mbc
 
     return mbc
   end
@@ -57,7 +61,7 @@ class MenuBar
     initialize_options(options)
 
     mbi = MenuBarItem.new @template, content, options
-    @menu_bar_content << MenuBarContent.new(@template, mbi, options)
+    @content << MenuBarContent.new(@template, mbi, options[:menu_bar_content])
 
     return mbi
   end
@@ -66,8 +70,8 @@ class MenuBar
     initialize_options(options)
 
     mbin = MenuBarInput.new @template, content, options
-    mbi = MenuBarItem.new @template, mbin, options
-    @menu_bar_content << MenuBarContent.new(@template, mbi, options)
+    mbi = MenuBarItem.new @template, mbin, options[:menu_bar_item]
+    @content << MenuBarContent.new(@template, mbi, options[:menu_bar_content])
 
     return mbi
   end
@@ -75,57 +79,55 @@ class MenuBar
   def menu(button_text, options = {})
     initialize_options(options)
 
-    mbi = MenuBarItem.new(@template, button_text + @template.content_tag(:span, '', :class => MENU_BAR_ITEM_ARROW_CLASS), options)
+    mbi = MenuBarItem.new(@template, button_text + @template.content_tag(:span, '', :class => MENU_BAR_ITEM_ARROW_CLASS), options[:menu_bar_item])
     m = Menu.new(@template, options)
 
     yield m if block_given?
 
-    # Init content with menu options
-    options = options.merge(:wrapper_options => options[:wrapper_options].merge(:class => MENU_BAR_CONTENT_WITH_MENU_CLASS))
-
     # We give the menu bar content a special class so we can treat its contents differently than one without a menu inside
-    @menu_bar_content << MenuBarContent.new(@template, [mbi, m], options)
+    @content << MenuBarContent.new(@template, [mbi, m], options[:menu_bar_content].merge(:class => MENU_BAR_CONTENT_WITH_MENU_CLASS))
 
     return m
   end
 
   def separator
     s = @template.content_tag :div, '', :class => MENU_BAR_SEPARATOR_CLASS
-    @menu_bar_content << MenuBarContent.new(@template, s)
+    @content << MenuBarContent.new(@template, s)
 
     return s
   end  
 
   def to_s
-    @template.content_tag :ul, @menu_bar_content.collect(&:to_s).join.html_safe, html_options
+    @template.content_tag :ul, @content.collect(&:to_s).join.html_safe, html_options
   end
 
   private
 
   def initialize_options(options)
-    options[:html_options] ||= {}
-    options[:wrapper_options] ||= {}
+    options[:menu_bar_item] ||= {}
+    options[:menu_bar_content] ||= {}
+    
+    # Alignment always lies with the content wrapper
+    options[:menu_bar_content][:align] = options.delete(:align)
+    
     return options
   end
 
   def html_options
-    html_opts = @options
+    html_opts = @options.slice(:id, :class, :title)
 
     # Set up the css class
-    css_class = [MENU_BAR_CLASS, @options[:class]]
-    css_class.compact.join(' ')
-    html_opts[:class] = css_class
+    html_opts[:class] = [css_class, html_opts[:class]]      
+    html_opts[:class] = html_opts[:class].compact.join(' ')
 
-    return html_opts
+    return html_opts     
   end
   
-  # MODULES
+  # ABSTRACT CLASSES
   
-  module Content
-    def self.included(base)
-      base.class_attribute :css_class
-    end
-
+  class AbstractContent
+    class_attribute :css_class
+    attr_reader :content
     def initialize(template, content, options = {})
       @template = template
       @content = content
@@ -144,161 +146,167 @@ class MenuBar
     end
 
     def html_options
-      html_opts = @options[:wrapper_options] ? @options[:wrapper_options].dup : {}
+      html_opts = @options.slice(:id, :class, :title)
 
       # Set up the css class
-      html_opts[:class] = [css_class, html_opts[:class]]      
-      html_opts[:class] = html_opts[:class].compact.join(' ')
+      html_opts[:class] = [css_class, html_opts[:class]]
+      html_opts[:class] = html_opts[:class].compact.join(' ')      
+      html_opts[:style] = "float:#{@options[:align]}" if @options[:align]
 
-      return html_opts      
+      return html_opts
     end
   end
 
-  module Item
+  class AbstractItem < AbstractContent
     def selected(condition = :unset)
       @options[:selected] = (condition == :unset ? true : condition)
+
+      return self
     end
 
     def disabled(state = true)
       @options[:disabled] = state
-    end    
+
+      return self
+    end
+    
+    # Set the button up to disable when a particular DOM Event occurs
+    def disable_when(observable_dom_element, dom_event, js_condition, html_opts = {})
+      @options[:disable_when] = {:element => observable_dom_element, :event => dom_event, :condition => js_condition, :html_options => html_opts}
+
+      return self
+    end
     
     private
     
     def wrap_content(content)
       output = @template.content_tag :div, content, html_options
-      output << @template.content_tag(:div, '', :class => CLICK_BLOCKER_CLASS) if @options[:disabled]
+      output << @template.content_tag(:div, '', click_blocker_html_options) if @options[:disabled] || @options[:disable_when]
+      
       return output
     end
     
     def html_options
-      html_opts = @options[:html_options] ? @options[:html_options].dup : {}
+      html_opts = @options.slice(:id, :class, :title)
 
       # Set up the css class
       html_opts[:class] = [css_class, html_opts[:class]]      
       html_opts[:class] << SELECTED_CLASS if @options[:selected]
       html_opts[:class] << DISABLED_CLASS if @options[:disabled]
+
+      if @options[:disable_when]
+        html_opts[:'data-disable-event-element'] = @options[:disable_when][:element]
+        html_opts[:'data-disable-event'] = @options[:disable_when][:event]
+        html_opts[:'data-disable-condition'] = @options[:disable_when][:condition]
+      end
+      
       html_opts[:class] = html_opts[:class].compact.join(' ')
 
       return html_opts     
-    end                    
-  end    
+    end
+    
+    def click_blocker_html_options
+      html_opts = @options[:disable_when] ? @options[:disable_when][:html_options] : {}
+      html_opts.reverse_merge! :title => @options[:title]
+
+      html_opts[:class] = [CLICK_BLOCKER_CLASS, html_opts[:class]].compact.join(' ')
+      
+      return html_opts
+    end
+  end  
   
   # CLASSES
   
   class MenuBarGroup < MenuBar
-    
-    private
-    
-    def html_options
-      html_opts = @options
-
-      # Set up the css class
-      css_class = [MENU_BAR_GROUP_CLASS, @options[:class]]
-      css_class.compact.join(' ')
-      html_opts[:class] = css_class
-
-      return html_opts
-    end
+    self.css_class = MENU_BAR_GROUP_CLASS
   end
   
-  class MenuBarContent    
-    include MenuBar::Content
+  class MenuBarContent < AbstractContent
     self.css_class = MENU_BAR_CONTENT_CLASS
   end
 
-  class MenuBarItem
-    include MenuBar::Content
-    include MenuBar::Item
+  class MenuBarItem < AbstractItem
     self.css_class = MENU_BAR_ITEM_CLASS
   end
 
-  class MenuBarInput
-    include MenuBar::Content
-    self.css_class = 'menu_bar_input'
+  class MenuBarInput < AbstractContent
+    self.css_class = MENU_BAR_INPUT_CLASS
+    
+    private
     
     def wrap_content(content)
       @template.label_tag nil, content
     end    
   end
 
-  class Menu
+  class Menu < AbstractContent
+    self.css_class = MENU_CLASS
+    
     def initialize(template, options = {})
       @template = template
-      @options = options.dup
-      @menu_content = []
+      @options = options
+      @content = []
 
       yield self if block_given?
     end
 
     def group(title, options = {})
+      initialize_options(options)
+      
       mgt = @template.content_tag(:div, title, :class => MENU_GROUP_TITLE_CLASS)
       mg = MenuGroup.new(@template, options)
 
       yield mg if block_given?
       
-      @menu_content << MenuContent.new(@template, [mgt, mg], options)
+      @content << MenuContent.new(@template, [mgt, mg], options[:menu_content])
 
       return mg
     end
 
     def menu_content(content, options = {})
-      @menu_content << MenuContent.new(@template, content, options)
+      initialize_options(options)
+      
+      @content << MenuContent.new(@template, content, options)
     end    
 
     def menu_item(content, options = {})
+      initialize_options(options)
+      
       mi = MenuItem.new(@template, content, options)
-      @menu_content << MenuContent.new(@template, mi, options)
+      @content << MenuContent.new(@template, mi, options[:menu_content])
 
       return mi
     end
 
     def separator
       s = @template.content_tag :div, '', :class => MENU_SEPARATOR_CLASS
-      @menu_content << MenuContent.new(@template, s)
+      @content << MenuContent.new(@template, s)
 
       return s
     end    
 
-    def to_s
-      @template.content_tag :ul, @menu_content.collect(&:to_s).join.html_safe, html_options unless @menu_content.empty?
-    end
-
     private
 
-    def html_options
-      html_opts = @options[:html_options] ? @options[:html_options].dup : {}
-
-      # Set up the css class
-      html_opts[:class] = [MENU_CLASS, html_opts[:class]]
-      html_opts[:class] = html_opts[:class].compact.join(' ')      
-
-      return html_opts
+    def wrap_content(content)
+      @template.content_tag :ul, content, html_options
     end
+    
+    def initialize_options(options)
+      options[:menu_item] ||= {}
+      options[:menu_content] ||= {}
+      return options
+    end    
   end
 
   class MenuGroup < Menu
-    private
-
-    def html_options
-      html_opts = @options[:html_options] ? @options[:html_options].dup : {}
-
-      # Set up the css class
-      html_opts[:class] = [MENU_GROUP_CLASS, html_opts[:class]]
-      html_opts[:class] = html_opts[:class].compact.join(' ')      
-
-      return html_opts
-    end
+    self.css_class = MENU_GROUP_CLASS
   end
 
-  class MenuContent
-    include MenuBar::Content
+  class MenuContent < AbstractContent
     self.css_class = MENU_CONTENT_CLASS
   end
 
-  class MenuItem
-    include MenuBar::Content
-    include MenuBar::Item
+  class MenuItem < AbstractItem
     self.css_class = MENU_ITEM_CLASS
   end
 end
