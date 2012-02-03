@@ -134,6 +134,7 @@
     // Allow right alignment of buttons  
     &.right{
       float: right;
+      margin: 0 0 0 $menu-bar-item-spacing;
       
       .menu {
         right: 0;
