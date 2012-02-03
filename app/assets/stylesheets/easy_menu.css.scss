@@ -23,7 +23,7 @@
     .menu_bar_content{
       margin-left: -$menu-bar-item-spacing - $menu-bar-item-border-width;
     }
-    
+
     .menu_bar_content:first-child{
       margin-left: 0;
     }
@@ -31,7 +31,7 @@
       margin-right: 0;
     }    
   }
-  
+
   // MENU BAR CONTENT
   .menu_bar_content{
     display: inline-block;
@@ -96,7 +96,7 @@
           border-top: 1px solid #E0E0E0;
           margin: $menu-item-vertical-padding 0;
         }
-        
+
       }
 
       // Subsequent menu groups
@@ -128,6 +128,15 @@
       z-index: $menu-bar-item-zindex + 2; // Position all the contents of this menu_content above any other menu bar item
       .menu {
         display: block;
+      }
+    }
+
+    // Allow right alignment of buttons  
+    &.right{
+      float: right;
+      
+      .menu {
+        right: 0;
       }
     }
 

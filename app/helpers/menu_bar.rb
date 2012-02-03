@@ -149,10 +149,8 @@ class MenuBar
       html_opts = @options.slice(:id, :class, :title)
 
       # Set up the css class
-      html_opts[:class] = [css_class, html_opts[:class]]
+      html_opts[:class] = [css_class, html_opts[:class], @options[:align]]
       html_opts[:class] = html_opts[:class].compact.join(' ')      
-      html_opts[:style] = "float:#{@options[:align]}" if @options[:align]
-
       return html_opts
     end
   end
