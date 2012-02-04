@@ -16,7 +16,7 @@ $(document).observe('dom:loaded', function() {
         }
     });
     // Used by the above click handler to determine if the browser already submitted the form.
-    $$('form').invoke('observe', 'submit', function(event, form) { form.addClass('submitting') });
+    $$('form').invoke('observe', 'submit', function(event) { event.element().addClassName('submitting') });
 
     // Allow users to open an close menus by clicking
     $$('.menu_bar_content.with_menu').invoke('removeClassName', 'no_js');
