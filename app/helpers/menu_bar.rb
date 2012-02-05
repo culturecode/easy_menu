@@ -1,7 +1,5 @@
 # TODO make menu bar group an actual group instead of a state toggle
 class MenuBar
-  TOGGLE_MENU_CLASS = 'toggle_menu'
-
   MENU_BAR_CLASS = 'menu_bar'
   MENU_BAR_CONTENT_CLASS = 'menu_bar_content'
   MENU_BAR_GROUP_CLASS = 'menu_bar_group'
@@ -16,14 +14,14 @@ class MenuBar
   MENU_GROUP_TITLE_CLASS = 'menu_group_title'
   MENU_ITEM_CLASS = 'menu_item'
   MENU_SEPARATOR_CLASS = 'menu_separator'
-
   CLICK_BLOCKER_CLASS = 'click_blocker'
-
   SELECTED_CLASS = 'selected'
   DISABLED_CLASS = 'disabled'
   GROUPED_CLASS = 'grouped'
   FIRST_GROUP_ITEM_CLASS = 'first_group_item'
   LAST_GROUP_ITEM_CLASS = 'last_group_item'
+  
+  HTML_OPTIONS = [:id, :class, :title, :style]
 
   class_attribute :css_class
   self.css_class = MENU_BAR_CLASS
@@ -114,7 +112,7 @@ class MenuBar
   end
 
   def html_options
-    html_opts = @options.slice(:id, :class, :title)
+    html_opts = @options.slice(*HTML_OPTIONS)
 
     # Set up the css class
     html_opts[:class] = [css_class, html_opts[:class]]      
@@ -146,7 +144,7 @@ class MenuBar
     end
 
     def html_options
-      html_opts = @options.slice(:id, :class, :title)
+      html_opts = @options.slice(*HTML_OPTIONS)
 
       # Set up the css class
       html_opts[:class] = [css_class, html_opts[:class], @options[:align]]
@@ -185,7 +183,7 @@ class MenuBar
     end
     
     def html_options
-      html_opts = @options.slice(:id, :class, :title)
+      html_opts = @options.slice(*HTML_OPTIONS)
 
       # Set up the css class
       html_opts[:class] = [css_class, html_opts[:class]]      
