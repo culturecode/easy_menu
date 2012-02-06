@@ -153,6 +153,9 @@
     }
 
     // INPUTS IN THE MENU
+    form{
+      margin: 0;
+    }
     input[type=search]{
       @include text-field;
       -webkit-appearance: textfield;
