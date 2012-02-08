@@ -67,6 +67,7 @@ $menu-item-horizontal-padding: 2em;
   }
   
   > a, > label{
+    cursor: pointer; // Override browser default on labels
     text-decoration: none;        
     // Make the a fill the hoverable area of the button so clicking anywhere triggers the link
     margin: -$menu-bar-item-horizontal-padding (-$menu-bar-item-horizontal-padding - $menu-bar-item-border-width);

@@ -1,5 +1,6 @@
 # TODO make menu bar group an actual group instead of a state toggle
 class MenuBar
+  DEFAULT_THEME_CLASS = 'default_theme'
   MENU_BAR_CLASS = 'menu_bar'
   MENU_BAR_CONTENT_CLASS = 'menu_bar_content'
   MENU_BAR_GROUP_CLASS = 'menu_bar_group'
@@ -28,7 +29,7 @@ class MenuBar
 
   def initialize(template, options = {})
     @template = template
-    @options = options
+    @options = options.reverse_merge(:theme => DEFAULT_THEME_CLASS)
 
     @content = []
 
@@ -115,7 +116,7 @@ class MenuBar
     html_opts = @options.slice(*HTML_OPTIONS)
 
     # Set up the css class
-    html_opts[:class] = [css_class, html_opts[:class]]      
+    html_opts[:class] = [css_class, html_opts[:class], @options[:theme]]
     html_opts[:class] = html_opts[:class].compact.join(' ')
 
     return html_opts     
@@ -231,7 +232,7 @@ class MenuBar
     private
     
     def wrap_content(content)
-      @template.label_tag nil, content
+      @template.label_tag nil, content, html_options
     end    
   end
 
