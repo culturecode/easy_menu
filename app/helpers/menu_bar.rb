@@ -37,8 +37,10 @@ class MenuBar
   end
 
   def group(options = {})
+    initialize_options(options)
+    
     mbg = MenuBarGroup.new(@template, options)
-    mbc = MenuBarContent.new(@template, mbg, options)
+    mbc = MenuBarContent.new(@template, mbg, options[:menu_bar_content])
 
     yield mbg if block_given?
     
