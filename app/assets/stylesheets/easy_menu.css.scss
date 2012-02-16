@@ -14,6 +14,8 @@
   padding: 0;
   list-style: none;
   height: $menu-bar-height;
+  position: relative;
+  z-index: 0; // Scope all positioned elements z-index within the menu so they don't move above or below other page elements, only each other
 
   // MENU BAR_GROUP
   .menu_bar_group{
