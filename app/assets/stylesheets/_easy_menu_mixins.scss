@@ -136,6 +136,7 @@ $menu-item-horizontal-padding: 2em;
   white-space: nowrap;
   font: $menu-bar-font;
   padding: $menu-item-vertical-padding $menu-item-horizontal-padding;
+  cursor: pointer;
 
   a {
     color: $menu-bar-item-text-color;
@@ -160,9 +161,10 @@ $menu-item-horizontal-padding: 2em;
     background: -webkit-linear-gradient(top, #AFCDF6 0%,#94A6F4 100%);
     background: linear-gradient(top, #AFCDF6 0%,#94A6F4 100%);
     background-image: -ms-linear-gradient(bottom, #AFCDF6 0%, #94A6F4 100%);
+    color: white;
 
     a {
-      color: white;
+      color: inherit;
     }
   }
 }
