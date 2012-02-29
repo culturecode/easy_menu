@@ -1,4 +1,6 @@
 $(document).observe('dom:loaded', function() {
+    var menuBarRootSelector = '.menu_bar:not(.no_js) ';
+
     // Because some browsers don't support submit buttons outside of forms triggering form submits,
     // do it in javascript just to make sure it happens
     Element.on(document.body, 'click', 'input[type=submit][form]', function(event){
@@ -19,8 +21,8 @@ $(document).observe('dom:loaded', function() {
     $$('form').invoke('observe', 'submit', function(event) { event.element().addClassName('submitting') });
 
     // Allow users to open an close menus by clicking
-    $$('.menu_bar_content.with_menu').invoke('removeClassName', 'no_js');
-    $$('.menu_bar_content.with_menu .menu_bar_item').invoke('observe', 'click', function(event){
+    $$(menuBarRootSelector + '.menu_bar_content.with_menu').invoke('removeClassName', 'no_js');
+    $$(menuBarRootSelector + '.menu_bar_content.with_menu .menu_bar_item').invoke('observe', 'click', function(event){
         
         var mbc = $(event.element()).up('.menu_bar_content');
         $$('.menu_bar_content.with_menu').without(mbc).invoke('removeClassName', 'open');
@@ -28,11 +30,11 @@ $(document).observe('dom:loaded', function() {
         event.stop();
     });
     $(document.body).observe('click', function(){
-        $$('.menu_bar_content.with_menu').invoke('removeClassName', 'open');
+        $$(menuBarRootSelector + '.menu_bar_content.with_menu').invoke('removeClassName', 'open');
     });
 
     // Disable Elements with a disable condition when that condition is met
-    $$('.menu_bar_item[data-disable-event-element]').each(function(element){
+    $$(menuBarRootSelector + '.menu_bar_item[data-disable-event-element]').each(function(element){
         var mbi = $(element);
         var observableElement = eval(mbi.getAttribute('data-disable-event-element'));
         var event = mbi.getAttribute('data-disable-event');

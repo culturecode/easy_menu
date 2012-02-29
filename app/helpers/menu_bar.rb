@@ -118,7 +118,9 @@ class MenuBar
     html_opts = @options.slice(*HTML_OPTIONS)
 
     # Set up the css class
-    html_opts[:class] = [css_class, html_opts[:class], @options[:theme]]
+    html_opts[:class] = [css_class, html_opts[:class]]
+    html_opts[:class] << @options[:theme] if @options[:theme].present?
+    html_opts[:class] << 'no_js' if @options[:js] == false
     html_opts[:class] = html_opts[:class].compact.join(' ')
 
     return html_opts     
