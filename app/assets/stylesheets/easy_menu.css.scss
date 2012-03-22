@@ -76,6 +76,7 @@
         display: block;
         padding: 0;
         margin: 0;
+        position: relative;
 
         .menu_item{
           @include menu_item;
