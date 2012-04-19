@@ -115,7 +115,7 @@ class MenuBar
   end
 
   def html_options
-    html_opts = @options.slice(*HTML_OPTIONS)
+    html_opts = @options.slice(*html_option_keys) 
 
     # Set up the css class
     html_opts[:class] = [css_class, html_opts[:class]]
@@ -125,6 +125,10 @@ class MenuBar
 
     return html_opts     
   end
+  
+  def html_option_keys
+    HTML_OPTIONS + @options.keys.select{|key| key.to_s.starts_with? 'data-'}
+  end  
   
   # ABSTRACT CLASSES
   
@@ -149,12 +153,16 @@ class MenuBar
     end
 
     def html_options
-      html_opts = @options.slice(*HTML_OPTIONS)
+      html_opts = @options.slice(*html_option_keys) 
 
       # Set up the css class
       html_opts[:class] = [css_class, html_opts[:class], @options[:align]]
       html_opts[:class] = html_opts[:class].compact.join(' ')      
       return html_opts
+    end
+    
+    def html_option_keys
+      HTML_OPTIONS + @options.keys.select{|key| key.to_s.starts_with? 'data-'}
     end
   end
 
@@ -188,7 +196,7 @@ class MenuBar
     end
     
     def html_options
-      html_opts = @options.slice(*HTML_OPTIONS)
+      html_opts = @options.slice(*html_option_keys) 
 
       # Set up the css class
       html_opts[:class] = [css_class, html_opts[:class]]      
