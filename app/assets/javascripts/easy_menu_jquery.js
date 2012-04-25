@@ -28,10 +28,11 @@ $(document).ready(function() {
         var mbc = $(this).closest('.menu_bar_content');
         $(menuBarRootSelector + '.menu_bar_content.with_menu').not(mbc).removeClass('open');
         mbc.toggleClass('open');
-        return false;
     });
-    $('body').click(function(){
-        $(menuBarRootSelector + '.menu_bar_content.with_menu').removeClass('open');
+    
+    $('body').click(function(event){
+        if ($(event.target).closest('.menu_bar_content.with_menu').length > 0) { return } // Don't close the menus if the click came from a menu
+        $(menuBarRootSelector + '.menu_bar_content.with_menu.open').removeClass('open');
     });
 
     // Disable Elements with a disable condition when that condition is met

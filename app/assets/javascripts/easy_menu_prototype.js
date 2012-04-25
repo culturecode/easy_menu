@@ -22,15 +22,14 @@ $(document).observe('dom:loaded', function() {
 
     // Allow users to open an close menus by clicking
     $$(menuBarRootSelector + '.menu_bar_content.with_menu').invoke('removeClassName', 'no_js');
-    $$(menuBarRootSelector + '.menu_bar_content.with_menu .menu_bar_item').invoke('observe', 'click', function(event){
-        
+    $$(menuBarRootSelector + '.menu_bar_content.with_menu .menu_bar_item').invoke('observe', 'click', function(event){        
         var mbc = $(event.element()).up('.menu_bar_content');
         $$('.menu_bar_content.with_menu').without(mbc).invoke('removeClassName', 'open');
         mbc.toggleClassName('open');
-        event.stop();
     });
-    $(document.body).observe('click', function(){
-        $$(menuBarRootSelector + '.menu_bar_content.with_menu').invoke('removeClassName', 'open');
+    Element.observe(document.body, 'click', function(event){
+        if (event.findElement('.menu_bar_content.with_menu')){ return }  // Don't close the menus if the click came from a menu
+        $$(menuBarRootSelector + '.menu_bar_content.with_menu.open').invoke('removeClassName', 'open');
     });
 
     // Disable Elements with a disable condition when that condition is met
@@ -40,7 +39,7 @@ $(document).observe('dom:loaded', function() {
         var event = mbi.getAttribute('data-disable-event');
         var condition = mbi.getAttribute('data-disable-condition') || true;
 
-        var setState = function(){
+        function setState(){
             if (eval(condition)){
                 mbi.addClassName('disabled');
             } else {
