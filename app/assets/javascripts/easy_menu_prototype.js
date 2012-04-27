@@ -28,7 +28,7 @@ $(document).observe('dom:loaded', function() {
         mbc.toggleClassName('open');
     });
     Element.observe(document.body, 'click', function(event){
-        if (event.findElement('.menu_bar_content.with_menu')){ return }  // Don't close the menus if the click came from a menu
+        if (event.findElement('.menu_bar_content.with_menu .menu_bar_item')){ return }  // Don't close the menus if the click came from a menu trigger
         $$(menuBarRootSelector + '.menu_bar_content.with_menu.open').invoke('removeClassName', 'open');
     });
 
