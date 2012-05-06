@@ -1,5 +1,7 @@
 # TODO make menu bar group an actual group instead of a state toggle
 class MenuBar
+  include EasyMenu::Helpers
+
   DEFAULT_THEME_CLASS = 'default_theme'
   MENU_BAR_CLASS = 'menu_bar'
   MENU_BAR_CONTENT_CLASS = 'menu_bar_content'
@@ -21,8 +23,6 @@ class MenuBar
   GROUPED_CLASS = 'grouped'
   FIRST_GROUP_ITEM_CLASS = 'first_group_item'
   LAST_GROUP_ITEM_CLASS = 'last_group_item'
-  
-  HTML_OPTIONS = [:id, :class, :title, :style]
 
   class_attribute :css_class
   self.css_class = MENU_BAR_CLASS
@@ -86,7 +86,7 @@ class MenuBar
     yield m if block_given?
 
     # We give the menu bar content a special class so we can treat its contents differently than one without a menu inside
-    @content << MenuBarContent.new(@template, [mbi, m], options[:menu_bar_content].merge(:class => MENU_BAR_CONTENT_WITH_MENU_CLASS))
+    @content << MenuBarContent.new(@template, [mbi, m], merge_class(options[:menu_bar_content], MENU_BAR_CONTENT_WITH_MENU_CLASS))
 
     return m
   end
@@ -118,21 +118,17 @@ class MenuBar
     html_opts = @options.slice(*html_option_keys) 
 
     # Set up the css class
-    html_opts[:class] = [css_class, html_opts[:class]]
-    html_opts[:class] << @options[:theme] if @options[:theme].present?
-    html_opts[:class] << 'no_js' if @options[:js] == false
-    html_opts[:class] = html_opts[:class].compact.join(' ')
+    merge_class(html_opts, css_class, @options[:theme])
+    merge_class(html_opts, 'no_js') if @options[:js] == false
 
     return html_opts     
   end
-  
-  def html_option_keys
-    HTML_OPTIONS + @options.keys.select{|key| key.to_s.starts_with? 'data-'}
-  end  
-  
+    
   # ABSTRACT CLASSES
   
   class AbstractContent
+    include EasyMenu::Helpers
+
     class_attribute :css_class
     attr_reader :content
     def initialize(template, content, options = {})
@@ -154,16 +150,10 @@ class MenuBar
 
     def html_options
       html_opts = @options.slice(*html_option_keys) 
+      merge_class(html_opts, css_class, @options[:align])
 
-      # Set up the css class
-      html_opts[:class] = [css_class, html_opts[:class], @options[:align]]
-      html_opts[:class] = html_opts[:class].compact.join(' ')      
-      return html_opts
-    end
-    
-    def html_option_keys
-      HTML_OPTIONS + @options.keys.select{|key| key.to_s.starts_with? 'data-'}
-    end
+      return html_opts     
+    end    
   end
 
   class AbstractItem < AbstractContent
@@ -198,18 +188,15 @@ class MenuBar
     def html_options
       html_opts = @options.slice(*html_option_keys) 
 
-      # Set up the css class
-      html_opts[:class] = [css_class, html_opts[:class]]      
-      html_opts[:class] << SELECTED_CLASS if @options[:selected]
-      html_opts[:class] << DISABLED_CLASS if @options[:disabled]
-
       if @options[:disable_when]
         html_opts[:'data-disable-event-element'] = @options[:disable_when][:element]
         html_opts[:'data-disable-event'] = @options[:disable_when][:event]
         html_opts[:'data-disable-condition'] = @options[:disable_when][:condition]
       end
-      
-      html_opts[:class] = html_opts[:class].compact.join(' ')
+
+      merge_class(html_opts, css_class)
+      merge_class(html_opts, SELECTED_CLASS) if @options[:selected]
+      merge_class(html_opts, DISABLED_CLASS) if @options[:disabled]
 
       return html_opts     
     end
@@ -218,7 +205,7 @@ class MenuBar
       html_opts = @options[:disable_when] ? @options[:disable_when][:html_options] : {}
       html_opts.reverse_merge! :title => @options[:title]
 
-      html_opts[:class] = [CLICK_BLOCKER_CLASS, html_opts[:class]].compact.join(' ')
+      merge_class(html_opts, CLICK_BLOCKER_CLASS)
       
       return html_opts
     end
