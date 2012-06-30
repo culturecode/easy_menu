@@ -18,6 +18,15 @@ $menu-item-vertical-padding: 0.4em;
 $menu-item-horizontal-padding: 2em;
 $menu-item-disabled-text-color: #AAA;
 
+// HELPERS
+@mixin gradient($start, $end){
+    background: -moz-linear-gradient(top, $start 0%, $end 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, $start), color-stop(100%, $end));
+    background: -webkit-linear-gradient(top, $start 0%, $end 100%);
+    background: linear-gradient(top, $start 0%, $end 100%);                
+    background-image: -ms-linear-gradient(bottom, $start 0%, $end 100%);
+}
+
 // MIXINS
 @mixin no-select{
     -moz-user-select: none;
@@ -34,17 +43,14 @@ $menu-item-disabled-text-color: #AAA;
   @include menu_bar_item_hover;
   @include menu_bar_item_pressed;
   @include menu_bar_item_disabled;
+  @include menu_bar_item_danger;
 }
 @mixin menu_bar_item_base{
   background: #EEE;
-  background: -moz-linear-gradient(top, #fefefe 0%, #dddede 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fefefe), color-stop(100%,#dddede));
-  background: -webkit-linear-gradient(top, #fefefe 0%,#dddede 100%);
-  background: linear-gradient(top, #fefefe 0%,#dddede 100%);
-  background-image: -ms-linear-gradient(bottom, #fefefe 0%, #dddede 100%);
+  @include gradient(#fefefe, #dddede);
 
   border-color: $menu-bar-item-border-color $menu-bar-item-border-color $menu-bar-item-border-shadow-color;
-  border-radius: 2px 2px 2px 2px;
+  border-radius: 2px;
   border-style: solid;
   border-width: $menu-bar-item-border-width;
   font: $menu-bar-font;
@@ -53,8 +59,9 @@ $menu-item-disabled-text-color: #AAA;
   padding: 0 $menu-bar-item-horizontal-padding;
   white-space: nowrap;
   text-align: center;
-  text-shadow: 0 1px 1px white;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
   display: inline-block;
+  color: $menu-bar-item-text-color;
   
   // Place the button above any nested menu
   position: relative;
@@ -75,7 +82,7 @@ $menu-item-disabled-text-color: #AAA;
     padding: $menu-bar-item-horizontal-padding ($menu-bar-item-horizontal-padding + $menu-bar-item-border-width);
   }
   a:link, a:visited{
-    color: $menu-bar-item-text-color;
+    color: inherit;
   }
 
   // Hide the inputs without making them display none. IE doesn't click them if they are display none.
@@ -88,6 +95,7 @@ $menu-item-disabled-text-color: #AAA;
 @mixin menu_bar_item_hover{
   &:hover:not(.disabled){
     border-color: #888;
+    border-color: rgba(0,0,0,.5);
     // Make the button border appear even when in a group by popping the button up above its siblings
     z-index: $menu-bar-item-zindex + 1;
     position: relative;
@@ -96,11 +104,7 @@ $menu-item-disabled-text-color: #AAA;
 @mixin menu_bar_item_pressed{
   &:active:not(.disabled), &.selected{
     background: #f0f0f0;
-    background: -moz-linear-gradient(top, #f0f0f0 0%, #cccdcd 100%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f0f0f0), color-stop(100%,#cccdcd));
-    background: -webkit-linear-gradient(top, #f0f0f0 0%,#cccdcd 100%);
-    background: linear-gradient(top, #f0f0f0 0%,#cccdcd 100%);                
-
+    @include gradient(#fefefe, #cccdcd);
     box-shadow: 0 0 5px rgba(0,0,0,0.5) inset;
 
     // Make the button border appear even when in a group by popping the button up above its siblings
@@ -111,9 +115,19 @@ $menu-item-disabled-text-color: #AAA;
 }
 
 @mixin menu_bar_item_disabled{
-  &.disabled, &.disabled a{
+  &.disabled{
     cursor: default;
     color: $menu-bar-item-disabled-text-color;
+  }
+}
+
+@mixin menu_bar_item_danger{
+  &.danger{
+    background: #f0f0f0;
+    color: white;
+    border-color: rgba(0,0,0,.1) rgba(0,0,0,.1) rgba(0,0,0,.6);
+    @include gradient(#EE5F5B, #BD362F);
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
   }
 }
 
@@ -158,11 +172,7 @@ $menu-item-disabled-text-color: #AAA;
   }
   &:hover {
     background: #94A6F4;
-    background: -moz-linear-gradient(top, #AFCDF6 0%, #94A6F4 100%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#AFCDF6), color-stop(100%,#94A6F4));
-    background: -webkit-linear-gradient(top, #AFCDF6 0%,#94A6F4 100%);
-    background: linear-gradient(top, #AFCDF6 0%,#94A6F4 100%);
-    background-image: -ms-linear-gradient(bottom, #AFCDF6 0%, #94A6F4 100%);
+    @include gradient(#AFCDF6, #94A6F4);
     color: white;
 
     a {
