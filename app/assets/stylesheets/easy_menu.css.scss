@@ -39,11 +39,6 @@
     vertical-align: middle;
     margin: 0 $menu-bar-item-spacing 0 0;
 
-    // CONTENTS
-    form{
-      display: inline-block;
-    }
-
     // MENU BAR ITEMS
     .menu_bar_item{
       @include menu_bar_item;
@@ -156,7 +151,7 @@
 
     // INPUTS IN THE MENU
     form{
-      margin: 0;
+      display: inline-block;
     }
     input[type=search]{
       @include text-field;
@@ -167,21 +162,28 @@
     input[type=text]{
       @include text-field;
     }
-    input[type='checkbox']{
-      vertical-align: middle;
-    }
-    select{
-      @include menu_bar_item_base;
-      @include menu_bar_item_hover;
-      height: $menu-bar-height;
-      font: $menu-bar-font;
-      padding: 0.4em;
 
-      option{
-        text-shadow: none;
+    .menu_bar_item{
+      input[type='checkbox']{
+        // Make input align properly when used in the menu bar, especially if used in a menu trigger in IE.
+        margin: 0;
+        display: inline-block;
+        vertical-align: top;
+        height: $menu-bar-item-height;
+      }      
+      select{
+        @include menu_bar_item_base;
+        @include menu_bar_item_hover;
+        height: $menu-bar-height;
+        font: $menu-bar-font;
         padding: 0.4em;
-      }
-    }        
+
+        option{
+          text-shadow: none;
+          padding: 0.4em;
+        }
+      }        
+    }
   }
 }
 .menu_bar.toggle_menu{
