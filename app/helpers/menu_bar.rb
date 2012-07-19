@@ -49,10 +49,10 @@ class MenuBar
     return mbg
   end
 
-  def menu_bar_content(content, options = {})
+  def menu_bar_content(content = nil, options = {}, &block)
     initialize_options(options)
 
-    mbc = MenuBarContent.new(@template, content, options)
+    mbc = MenuBarContent.new(@template, (block_given? ? block.call : content), options)
     @content << mbc
 
     return mbc
