@@ -6,7 +6,7 @@ $menu-bar-item-border-color: #BBBBBB;
 $menu-bar-item-border-shadow-color: #888888;
 $menu-bar-item-border-width: 1px;
 $menu-bar-item-text-color: #333;
-$menu-bar-item-disabled-text-color: #888;
+$menu-bar-item-disabled-text-color: #999;
 $menu-bar-item-spacing: 10px;
 $menu-bar-height: 2*$menu-bar-item-border-width + $menu-bar-item-height;
 $menu-bar-font: bold 12px 'Arial', 'sans-serif';
@@ -42,8 +42,8 @@ $menu-item-disabled-text-color: #AAA;
   @include menu_bar_item_base;
   @include menu_bar_item_hover;
   @include menu_bar_item_pressed;
-  @include menu_bar_item_disabled;
   @include menu_bar_item_colours;
+  @include menu_bar_item_disabled;
 }
 @mixin menu_bar_item_base{
   background: #EEE;
@@ -118,6 +118,9 @@ $menu-item-disabled-text-color: #AAA;
   &.disabled{
     cursor: default;
     color: $menu-bar-item-disabled-text-color;
+    @include gradient(#fefefe, #dddede);
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+    border-color: #CCC;
   }
 }
 
