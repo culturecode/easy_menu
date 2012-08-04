@@ -43,7 +43,7 @@ $menu-item-disabled-text-color: #AAA;
   @include menu_bar_item_hover;
   @include menu_bar_item_pressed;
   @include menu_bar_item_disabled;
-  @include menu_bar_item_danger;
+  @include menu_bar_item_colours;
 }
 @mixin menu_bar_item_base{
   background: #EEE;
@@ -121,15 +121,46 @@ $menu-item-disabled-text-color: #AAA;
   }
 }
 
-@mixin menu_bar_item_danger{
-  &.danger{
-    background: #f0f0f0;
+@mixin coloured_button($light, $dark){
+    background: $dark;
     color: white;
     border-color: rgba(0,0,0,.1) rgba(0,0,0,.1) rgba(0,0,0,.6);
-    @include gradient(#EE5F5B, #BD362F);
+    @include gradient($light, $dark);
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
+
+@mixin menu_bar_item_colours{
+  &.danger{
+    @include coloured_button(#EE5F5B, #BD362F);
+  }
+  &.primary{
+    @include coloured_button(#0088CC, #0055CC);
+  }
+  &.info{
+    @include coloured_button(#5BC0DE, #2F96B4);
+  }
+  &.success{
+    @include coloured_button(#62C462, #51A351);
+  }
+  &.warning{
+    @include coloured_button(#FBB450, #F89406);
+  }
+  &.inverse{
+    @include coloured_button(#555555, #222222);
+  }
+}
+
+
+@mixin menu_bar_item_primary{
+  &.primary{
+    background: #0055CC;
+    color: white;
+    border-color: rgba(0,0,0,.1) rgba(0,0,0,.1) rgba(0,0,0,.6);
+    @include gradient(#0088CC, #0055CC);
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
   }
 }
+
 
 @mixin text-field{
   border-radius: 2px;
