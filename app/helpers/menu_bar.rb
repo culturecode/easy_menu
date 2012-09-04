@@ -163,16 +163,17 @@ class MenuBar
       return self
     end
 
-    def disabled(state = true)
+    def disabled(state = true, click_blocker_html_options = {})
       @options[:disabled] = state
+      @click_blocker_html_options = click_blocker_html_options
 
       return self
     end
     
     # Set the button up to disable when a particular DOM Event occurs
-    def disable_when(observable_dom_element, dom_event, js_condition, html_opts = {})
-      @options[:disable_when] = {:element => observable_dom_element, :event => dom_event, :condition => js_condition, :html_options => html_opts}
-
+    def disable_when(observable_dom_element, dom_event, js_condition, click_blocker_html_options = {})
+      @options[:disable_when] = {:element => observable_dom_element, :event => dom_event, :condition => js_condition}
+      @click_blocker_html_options = click_blocker_html_options
       return self
     end
     
@@ -202,8 +203,8 @@ class MenuBar
     end
     
     def click_blocker_html_options
-      html_opts = @options[:disable_when] ? @options[:disable_when][:html_options] : {}
-      html_opts.reverse_merge! :title => @options[:title]
+      html_opts = @click_blocker_html_options
+      html_opts.reverse_merge! :title => @options[:title] # Default the title text to be the same as the unblocked title text
 
       merge_class(html_opts, CLICK_BLOCKER_CLASS)
       
