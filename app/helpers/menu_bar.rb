@@ -250,7 +250,7 @@ class MenuBar
     def group(title, options = {})
       initialize_options(options)
       
-      mgt = @template.content_tag(:div, title, :class => MENU_GROUP_TITLE_CLASS)
+      mgt = @template.content_tag(:div, title, merge_class(options[:menu_group_title], MENU_GROUP_TITLE_CLASS))
       mg = MenuGroup.new(@template, options)
 
       yield mg if block_given?
@@ -291,6 +291,7 @@ class MenuBar
     def initialize_options(options)
       options[:menu_item] ||= {}
       options[:menu_content] ||= {}
+      options[:menu_group_title] ||= {}
       return options
     end    
   end
