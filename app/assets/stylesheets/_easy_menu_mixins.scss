@@ -2,8 +2,8 @@
 $menu-bar-item-horizontal-padding: 7px;
 $menu-bar-item-height: 26px;
 $menu-bar-item-min-width: $menu-bar-item-height;
-$menu-bar-item-border-color: #BBBBBB;
-$menu-bar-item-border-shadow-color: #888888;
+$menu-bar-item-border-color: rgba(0,0,0,.1);
+$menu-bar-item-border-shadow-color: rgba(0,0,0,.6);
 $menu-bar-item-border-width: 1px;
 $menu-bar-item-text-color: #333;
 $menu-bar-item-disabled-text-color: #999;
@@ -27,7 +27,6 @@ $menu-item-disabled-text-color: #AAA;
   background-image: -ms-linear-gradient(bottom, $start 0%, $end 100%);
 }
 
-// MIXINS
 @mixin no-select{
   -moz-user-select: none;
   -webkit-user-select: none;
@@ -38,6 +37,22 @@ $menu-item-disabled-text-color: #AAA;
   -webkit-user-drag: none;
   user-drag: none;  
 }
+@mixin button_colour($light, $dark, $shift: 15px){
+    background-color: $dark;
+    color: white;
+    border-color: $menu-bar-item-border-color $menu-bar-item-border-color $menu-bar-item-border-shadow-color;
+    @include gradient($light, $dark);
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    background-repeat: no-repeat;
+
+    &:hover:not(:active){
+      -moz-transition: background-position 0.1s linear 0s;
+      -webkit-transition: background-position 0.1s linear 0s;
+      background-position: 0 (-$shift);
+    }
+}
+
+// MIXINS
 @mixin menu_bar_item{
   @include menu_bar_item_base;
   @include menu_bar_item_hover;
@@ -46,10 +61,7 @@ $menu-item-disabled-text-color: #AAA;
   @include menu_bar_item_disabled;
 }
 @mixin menu_bar_item_base{
-  background: #EEE;
-  @include gradient(#fefefe, #dddede);
-
-  border-color: $menu-bar-item-border-color $menu-bar-item-border-color $menu-bar-item-border-shadow-color;
+  @include button_colour(#fefefe, #dddede, 5px);
   border-radius: 2px;
   border-style: solid;
   border-width: $menu-bar-item-border-width;
@@ -63,6 +75,9 @@ $menu-item-disabled-text-color: #AAA;
   display: inline-block;
   color: $menu-bar-item-text-color;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05); // Bevelled top edge
+  -moz-transition: border-color 0.1s linear 0s;
+  -webkit-transition: border-color 0.1s linear 0s;
+
   
   // Place the button above any nested menu
   position: relative;
@@ -96,7 +111,7 @@ $menu-item-disabled-text-color: #AAA;
 @mixin menu_bar_item_hover{
   &:hover:not(.disabled){
     border-color: #888;
-    border-color: rgba(0,0,0,.5);
+    border-color: rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.3) $menu-bar-item-border-shadow-color;
     // Make the button border appear even when in a group by popping the button up above its siblings
     z-index: $menu-bar-item-zindex + 1;
     position: relative;
@@ -125,39 +140,24 @@ $menu-item-disabled-text-color: #AAA;
   }
 }
 
-@mixin coloured_button($light, $dark){
-    background-color: $dark;
-    color: white;
-    border-color: rgba(0,0,0,.1) rgba(0,0,0,.1) rgba(0,0,0,.6);
-    @include gradient($light, $dark);
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-    background-repeat: no-repeat;
-
-    &:hover:not(:active){
-      -moz-transition: background-position 0.1s linear 0s;
-      -webkit-transition: background-position 0.1s linear 0s;
-      background-position: 0 -15px;
-    }
-}
-
 @mixin menu_bar_item_colours{
   &.danger{
-    @include coloured_button(#EE5F5B, #BD362F);
+    @include button_colour(#EE5F5B, #BD362F);
   }
   &.primary{
-    @include coloured_button(#0088CC, #0055CC);
+    @include button_colour(#0088CC, #0055CC);
   }
   &.info{
-    @include coloured_button(#5BC0DE, #2F96B4);
+    @include button_colour(#5BC0DE, #2F96B4);
   }
   &.success{
-    @include coloured_button(#62C462, #51A351);
+    @include button_colour(#62C462, #51A351);
   }
   &.warning{
-    @include coloured_button(#FBB450, #F89406);
+    @include button_colour(#FBB450, #F89406);
   }
   &.inverse{
-    @include coloured_button(#555555, #222222);
+    @include button_colour(#555555, #222222);
   }
 }
 
