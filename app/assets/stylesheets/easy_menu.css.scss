@@ -48,11 +48,13 @@
 
     // MENU BAR SEPARATOR
     .menu_bar_separator{
-      background-color: #C3C3C3;
+      background-color: #AAA;
       border-right: 1px solid #F7F7F7;
+      opacity: 0.5;
       display: inline-block;
       height: $menu-bar-separator-height;
       padding-right: 1px;
+      vertical-align: middle;
     }
 
     // MENUS
@@ -120,6 +122,7 @@
         border-color: $menu-bar-item-border-color;
         border-bottom: none;
         margin-bottom: $menu-bar-item-border-width; // Make up for the loss of border so the button doesn't shift
+        box-shadow: none;
       }
 
       z-index: $menu-bar-item-zindex + 2; // Position all the contents of this menu_content above any other menu bar item

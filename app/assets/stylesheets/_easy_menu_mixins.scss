@@ -3,7 +3,7 @@ $menu-bar-item-horizontal-padding: 7px;
 $menu-bar-item-height: 26px;
 $menu-bar-item-min-width: $menu-bar-item-height;
 $menu-bar-item-border-color: rgba(0,0,0,.1);
-$menu-bar-item-border-shadow-color: rgba(0,0,0,.6);
+$menu-bar-item-border-shadow-color: rgba(0,0,0,.3);
 $menu-bar-item-border-width: 1px;
 $menu-bar-item-text-color: #333;
 $menu-bar-item-disabled-text-color: #999;
@@ -11,7 +11,7 @@ $menu-bar-item-spacing: 10px;
 $menu-bar-height: 2*$menu-bar-item-border-width + $menu-bar-item-height;
 $menu-bar-font: bold 12px 'Arial', 'sans-serif';
 $menu-bar-item-zindex: 1;
-$menu-bar-separator-height: 20px;
+$menu-bar-separator-height: 26px;
 $menu-border-width: 1px;
 $menu-vertical-padding: 0.2em;
 $menu-item-vertical-padding: 0.4em;
@@ -111,7 +111,7 @@ $menu-item-disabled-text-color: #AAA;
 @mixin menu_bar_item_hover{
   &:hover:not(.disabled){
     border-color: #888;
-    border-color: rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.3) $menu-bar-item-border-shadow-color;
+    border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.2) $menu-bar-item-border-shadow-color;
     // Make the button border appear even when in a group by popping the button up above its siblings
     z-index: $menu-bar-item-zindex + 1;
     position: relative;
@@ -120,7 +120,6 @@ $menu-item-disabled-text-color: #AAA;
 @mixin menu_bar_item_pressed{
   &:active:not(.disabled), &.selected{
     background: #f0f0f0;
-    @include gradient(#fefefe, #cccdcd);
     box-shadow: 0 0 5px rgba(0,0,0,0.5) inset;
 
     // Make the button border appear even when in a group by popping the button up above its siblings

@@ -165,7 +165,7 @@ class MenuBar
 
     def disabled(*args)
       @click_blocker_html_options = args.extract_options!
-      @options[:disabled] = args.any? ? args.first : true
+      @options[:disabled] = args.present? ? args.first : true
 
       return self
     end
