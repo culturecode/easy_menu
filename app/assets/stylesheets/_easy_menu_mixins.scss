@@ -200,8 +200,7 @@ $menu-item-disabled-text-color: #AAA;
     }
   }
   &:hover {
-    background: #94A6F4;
-    @include gradient(#AFCDF6, #94A6F4);
+    background: #08C;
     color: white;
 
     a {
