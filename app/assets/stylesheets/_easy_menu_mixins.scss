@@ -29,7 +29,7 @@ $menu-item-disabled-text-color: #AAA;
   background-image: -webkit-linear-gradient(top, $start 0%, $end 100%);
   background-image: linear-gradient(top, $start 0%, $end 100%);                
   background-image: -ms-linear-gradient(bottom, $start 0%, $end 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#{$start}', endColorstr='#{$end}',GradientType=0 ); /* IE6-9 */  
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#{ie-hex-str($start)}', endColorstr='#{ie-hex-str($end)}',GradientType=0 ); /* IE6-9 */  
   background-repeat: no-repeat;  
 }
 
