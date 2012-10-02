@@ -30,7 +30,8 @@
     }
     .menu_bar_content:last-child{
       margin-right: 0;
-    }    
+    }
+
   }
 
   // MENU BAR CONTENT
@@ -60,7 +61,9 @@
     // MENUS
     .menu{
       background: none repeat scroll 0 0 white;
-      border: $menu-border-width solid $menu-bar-item-border-color;
+      border: $menu-border-width solid;
+      border-color: ($menu-bar-item-dark-colour * $menu-bar-item-border-color-fallback-multiplier); // Fallback      
+      border-color: $menu-bar-item-border-color;
       border-radius: 0 0 2px 2px;
       box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
       list-style: none outside none;
@@ -118,6 +121,7 @@
     &.with_menu.no_js:hover, &.with_menu.open{
       .menu_bar_item {
         background: white;
+        filter: none; // Disable IE gradient background
         border-radius: 2px 2px 0 0;
         border-color: $menu-bar-item-border-color;
         border-bottom: none;

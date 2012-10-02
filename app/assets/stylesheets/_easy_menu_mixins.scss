@@ -5,6 +5,10 @@ $menu-bar-item-min-width: $menu-bar-item-height;
 $menu-bar-item-border-color: rgba(0,0,0,.1);
 $menu-bar-item-border-shadow-color: rgba(0,0,0,.3);
 $menu-bar-item-border-width: 1px;
+$menu-bar-item-border-color-fallback-multiplier: .8;
+$menu-bar-item-border-shadow-color-fallback-multiplier: .6;
+$menu-bar-item-light-colour: #FEFEFE;
+$menu-bar-item-dark-colour: #DDDEDE;
 $menu-bar-item-text-color: #333;
 $menu-bar-item-disabled-text-color: #999;
 $menu-bar-item-spacing: 10px;
@@ -25,6 +29,8 @@ $menu-item-disabled-text-color: #AAA;
   background-image: -webkit-linear-gradient(top, $start 0%, $end 100%);
   background-image: linear-gradient(top, $start 0%, $end 100%);                
   background-image: -ms-linear-gradient(bottom, $start 0%, $end 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#{$start}', endColorstr='#{$end}',GradientType=0 ); /* IE6-9 */  
+  background-repeat: no-repeat;  
 }
 
 @mixin no-select{
@@ -38,12 +44,12 @@ $menu-item-disabled-text-color: #AAA;
   user-drag: none;  
 }
 @mixin button_colour($light, $dark, $shift: 15px){
-    background-color: $dark;
     color: white;
-    border-color: $menu-bar-item-border-color $menu-bar-item-border-color $menu-bar-item-border-shadow-color;
-    @include gradient($light, $dark);
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-    background-repeat: no-repeat;
+    border-color: ($dark * $menu-bar-item-border-color-fallback-multiplier) ($dark * $menu-bar-item-border-color-fallback-multiplier) ($dark * $menu-bar-item-border-shadow-color-fallback-multiplier); // Fallback
+    border-color: $menu-bar-item-border-color $menu-bar-item-border-color $menu-bar-item-border-shadow-color;
+    background-color: $dark;
+    @include gradient($light, $dark);
 
     &:hover:not(:active){
       -moz-transition: background-position 0.1s linear 0s;
@@ -61,22 +67,24 @@ $menu-item-disabled-text-color: #AAA;
   @include menu_bar_item_disabled;
 }
 @mixin menu_bar_item_base{
-  @include button_colour(#fefefe, #dddede, 5px);
+  @include button_colour($menu-bar-item-light-colour, $menu-bar-item-dark-colour, 5px);
   border-radius: 2px;
   border-style: solid;
   border-width: $menu-bar-item-border-width;
-  font: $menu-bar-font;
-  line-height: $menu-bar-item-height;
-  min-width: $menu-bar-item-min-width - 2*$menu-bar-item-horizontal-padding;
-  padding: 0 $menu-bar-item-horizontal-padding;
-  white-space: nowrap;
-  text-align: center;
-  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
-  display: inline-block;
-  color: $menu-bar-item-text-color;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05); // Bevelled top edge
   -moz-transition: border-color 0.1s linear 0s;
   -webkit-transition: border-color 0.1s linear 0s;
+
+  min-width: $menu-bar-item-min-width - 2*$menu-bar-item-horizontal-padding;
+  padding: 0 $menu-bar-item-horizontal-padding;
+  display: inline-block;
+
+  font: $menu-bar-font;
+  line-height: $menu-bar-item-height;
+  color: $menu-bar-item-text-color;
+  white-space: nowrap;
+  text-align: center;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
 
   
   // Place the button above any nested menu
@@ -168,7 +176,8 @@ $menu-item-disabled-text-color: #AAA;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   margin: 0;
-  padding: 0 $menu-bar-item-horizontal-padding;
+  padding-left: $menu-bar-item-horizontal-padding; // Define individually so we don't override top padding. IE8 issue
+  padding-right: $menu-bar-item-horizontal-padding; // Define individually so we don't override top padding. IE8 issue
 }
 
 @mixin menu_item{
