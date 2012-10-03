@@ -24,12 +24,19 @@ $menu-item-disabled-text-color: #AAA;
 
 // HELPERS
 @mixin gradient($start, $end){
+  background: data_url('image/svg+xml', '<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1 1" preserveAspectRatio="none">
+    <linearGradient id="grad-ucgg-generated" gradientUnits="userSpaceOnUse" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#{$start}" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#{$end}" stop-opacity="1"/>
+    </linearGradient>
+    <rect x="0" y="0" width="1" height="1" fill="url(#grad-ucgg-generated)" />
+  </svg>');
+
   background-image: -moz-linear-gradient(top, $start 0%, $end 100%);
   background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, $start), color-stop(100%, $end));
   background-image: -webkit-linear-gradient(top, $start 0%, $end 100%);
   background-image: linear-gradient(top, $start 0%, $end 100%);                
   background-image: -ms-linear-gradient(bottom, $start 0%, $end 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#{ie-hex-str($start)}', endColorstr='#{ie-hex-str($end)}',GradientType=0 ); /* IE6-9 */  
   background-repeat: no-repeat;  
 }
 
@@ -48,8 +55,8 @@ $menu-item-disabled-text-color: #AAA;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
     border-color: ($dark * $menu-bar-item-border-color-fallback-multiplier) ($dark * $menu-bar-item-border-color-fallback-multiplier) ($dark * $menu-bar-item-border-shadow-color-fallback-multiplier); // Fallback
     border-color: $menu-bar-item-border-color $menu-bar-item-border-color $menu-bar-item-border-shadow-color;
-    background-color: $dark;
     @include gradient($light, $dark);
+    background-color: $dark;
 
     &:hover:not(:active){
       -moz-transition: background-position 0.1s linear 0s;

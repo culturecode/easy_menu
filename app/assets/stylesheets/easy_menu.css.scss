@@ -121,7 +121,6 @@
     &.with_menu.no_js:hover, &.with_menu.open{
       .menu_bar_item {
         background: white;
-        filter: none; // Disable IE gradient background
         border-radius: 2px 2px 0 0;
         border-color: $menu-bar-item-border-color;
         border-bottom: none;
