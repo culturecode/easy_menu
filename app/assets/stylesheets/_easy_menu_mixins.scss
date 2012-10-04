@@ -2,11 +2,11 @@
 $menu-bar-item-horizontal-padding: 7px;
 $menu-bar-item-height: 26px;
 $menu-bar-item-min-width: $menu-bar-item-height;
-$menu-bar-item-border-color: rgba(0,0,0,.1);
-$menu-bar-item-border-shadow-color: rgba(0,0,0,.3);
+$menu-bar-item-border-darken: .1;
+$menu-bar-item-border-shadow-darken: .3;
 $menu-bar-item-border-width: 1px;
-$menu-bar-item-border-color-fallback-multiplier: .8;
-$menu-bar-item-border-shadow-color-fallback-multiplier: .6;
+$menu-bar-item-border-colour: rgba(0,0,0, $menu-bar-item-border-darken);
+$menu-bar-item-border-shadow-colour: rgba(0,0,0, $menu-bar-item-border-shadow-darken);
 $menu-bar-item-light-colour: #FEFEFE;
 $menu-bar-item-dark-colour: #DDDEDE;
 $menu-bar-item-text-color: #333;
@@ -14,31 +14,18 @@ $menu-bar-item-disabled-text-color: #999;
 $menu-bar-item-spacing: 10px;
 $menu-bar-height: 2*$menu-bar-item-border-width + $menu-bar-item-height;
 $menu-bar-font: bold 12px 'Arial', 'sans-serif';
-$menu-bar-item-zindex: 1;
 $menu-bar-separator-height: 26px;
 $menu-border-width: 1px;
 $menu-vertical-padding: 0.2em;
 $menu-item-vertical-padding: 0.4em;
 $menu-item-horizontal-padding: 2em;
 $menu-item-disabled-text-color: #AAA;
+// Make the button border appear even when in a group by popping the button up above its siblings
+$menu-bar-item-zindex: 1;
+$menu-bar-item-hover-zindex: 2;
+$menu-bar-item-pressed-zindex: 3;
 
 // HELPERS
-@mixin gradient($start, $end){
-  background: data_url('image/svg+xml', '<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1 1" preserveAspectRatio="none">
-    <linearGradient id="grad-ucgg-generated" gradientUnits="userSpaceOnUse" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#{$start}" stop-opacity="1"/>
-      <stop offset="100%" stop-color="#{$end}" stop-opacity="1"/>
-    </linearGradient>
-    <rect x="0" y="0" width="1" height="1" fill="url(#grad-ucgg-generated)" />
-  </svg>');
-
-  background-image: -moz-linear-gradient(top, $start 0%, $end 100%);
-  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, $start), color-stop(100%, $end));
-  background-image: -webkit-linear-gradient(top, $start 0%, $end 100%);
-  background-image: linear-gradient(top, $start 0%, $end 100%);                
-  background-image: -ms-linear-gradient(bottom, $start 0%, $end 100%);
-  background-repeat: no-repeat;  
-}
 
 @mixin no-select{
   -moz-user-select: none;
@@ -50,54 +37,88 @@ $menu-item-disabled-text-color: #AAA;
   -webkit-user-drag: none;
   user-drag: none;  
 }
-@mixin button_colour($light, $dark, $shift: 15px){
-    color: white;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-    border-color: ($dark * $menu-bar-item-border-color-fallback-multiplier) ($dark * $menu-bar-item-border-color-fallback-multiplier) ($dark * $menu-bar-item-border-shadow-color-fallback-multiplier); // Fallback
-    border-color: $menu-bar-item-border-color $menu-bar-item-border-color $menu-bar-item-border-shadow-color;
-    @include gradient($light, $dark);
-    background-color: $dark;
+@mixin menu-bar-item-border-shadow-with-fallback($background-colour: $menu-bar-item-dark-colour){
+  border-bottom-color: darken($background-colour, percentage($menu-bar-item-border-shadow-darken)); // Fallback
+  border-bottom-color: $menu-bar-item-border-shadow-colour;
+}
+@mixin menu-bar-item-border-colour-with-fallback($background-colour: $menu-bar-item-dark-colour){
+  border-color: darken($background-colour, percentage($menu-bar-item-border-darken)); // Fallback
+  border-color: $menu-bar-item-border-colour;
+  @include menu-bar-item-border-shadow-with-fallback($background-colour);
+}
+@mixin menu-bar-item-border($background-colour: $menu-bar-item-dark-colour){
+  border: $menu-bar-item-border-width solid;
+  @include menu-bar-item-border-colour-with-fallback($background-colour);
+  border-radius: 2px;
+  -moz-transition: border-color 0.1s linear 0s;
+  -webkit-transition: border-color 0.1s linear 0s;    
+}
+@mixin gradient($start, $end){
+  // IE 9+
+  background-image: data_url('image/svg+xml', '<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1 1" preserveAspectRatio="none">
+    <linearGradient id="grad-ucgg-generated" gradientUnits="userSpaceOnUse" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#{$start}" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#{$end}" stop-opacity="1"/>
+    </linearGradient>
+    <rect x="0" y="0" width="1" height="1" fill="url(#grad-ucgg-generated)" />
+  </svg>');
 
-    &:hover:not(:active):not(.disabled){
+  background-image: -moz-linear-gradient(top, $start 0%, $end 100%);
+  background-image: -webkit-linear-gradient(top, $start 0%, $end 100%);
+  background-image: linear-gradient(top, $start 0%, $end 100%);                
+  background-repeat: no-repeat;  
+}
+@mixin button_colour($light, $dark, $text-colour: white, $text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25), $shift: 15px){
+    color: $text-colour;
+    text-shadow: $text-shadow;
+    @include menu-bar-item-border($dark);
+
+    background-color: mix($light, $dark);
+
+    // Don't override the background if the browser doesn't support gradients otherwise the buttons will be too dark
+    &:not(oldbrowser){
+      @include gradient($light, $dark);
+      background-color: $dark;
+    }
+
+    &:hover:not(:active):not(.disabled):not(.selected){
       -moz-transition: background-position 0.1s linear 0s;
       -webkit-transition: background-position 0.1s linear 0s;
       background-position: 0 (-$shift);
     }
 }
 
-// MIXINS
+// STYLES
 @mixin menu_bar_item{
   @include menu_bar_item_base;
   @include menu_bar_item_hover;
   @include menu_bar_item_pressed;
-  @include menu_bar_item_colours;
   @include menu_bar_item_disabled;
-}
-@mixin menu_bar_item_base{
-  @include button_colour($menu-bar-item-light-colour, $menu-bar-item-dark-colour, 5px);
-  border-radius: 2px;
-  border-style: solid;
-  border-width: $menu-bar-item-border-width;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05); // Bevelled top edge
-  -moz-transition: border-color 0.1s linear 0s;
-  -webkit-transition: border-color 0.1s linear 0s;
 
+  @include menu_bar_item_default_colour;
+  &.danger{  @include menu_bar_item_danger_colour  }
+  &.primary{ @include menu_bar_item_primary_colour }
+  &.info{    @include menu_bar_item_info_colour    }
+  &.success{ @include menu_bar_item_success_colour }
+  &.warning{ @include menu_bar_item_warning_colour }
+  &.inverse{ @include menu_bar_item_inverse_colour }  
+}
+
+@mixin menu_bar_item_base{
+  @include menu-bar-item-border;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05); // Bevelled top edge
   min-width: $menu-bar-item-min-width - 2*$menu-bar-item-horizontal-padding;
   padding: 0 $menu-bar-item-horizontal-padding;
   display: inline-block;
-
   font: $menu-bar-font;
   line-height: $menu-bar-item-height;
-  color: $menu-bar-item-text-color;
   white-space: nowrap;
   text-align: center;
-  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+  cursor: pointer;
 
-  
   // Place the button above any nested menu
   position: relative;
   z-index: $menu-bar-item-zindex;
-  cursor: pointer;
 
   img{
     vertical-align: middle;
@@ -124,20 +145,20 @@ $menu-item-disabled-text-color: #AAA;
   }    
 }
 @mixin menu_bar_item_hover{
-  &:hover:not(.disabled){
-    border-color: #888;
-    border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.2) $menu-bar-item-border-shadow-color;
-    // Make the button border appear even when in a group by popping the button up above its siblings
-    z-index: $menu-bar-item-zindex + 1;
+  &:hover{
+    border-color: #888; // Fallback
+    border-color: rgba(0,0,0, $menu-bar-item-border-darken * 2);
+    border-bottom-color: rgba(0,0,0, $menu-bar-item-border-shadow-darken * 2);
+    z-index: $menu-bar-item-hover-zindex;
     position: relative;
   }
 }
 @mixin menu_bar_item_pressed{
-  &:active:not(.disabled), &.selected{
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.67) inset, 0 -1px 0px rgba(255, 255, 255, .7) inset;
-
-    // Make the button border appear even when in a group by popping the button up above its siblings
-    z-index: $menu-bar-item-zindex + 1;
+  &:active, &.selected{
+    border-color: #555; // Fallback
+    border-color: rgba(0,0,0, $menu-bar-item-border-darken * 2);
+    box-shadow: 0 -1px 1px rgba(255, 255, 255, 0.4) inset, 0 2px 2px rgba(0, 0, 0, .3) inset;
+    z-index: $menu-bar-item-pressed-zindex;
     position: relative;
   }    
 }
@@ -152,25 +173,26 @@ $menu-item-disabled-text-color: #AAA;
   }
 }
 
-@mixin menu_bar_item_colours{
-  &.danger{
-    @include button_colour(#EE5F5B, #BD362F);
-  }
-  &.primary{
-    @include button_colour(#0088CC, #0055CC);
-  }
-  &.info{
-    @include button_colour(#5BC0DE, #2F96B4);
-  }
-  &.success{
-    @include button_colour(#62C462, #51A351);
-  }
-  &.warning{
-    @include button_colour(#FBB450, #F89406);
-  }
-  &.inverse{
-    @include button_colour(#555555, #222222);
-  }
+@mixin menu_bar_item_default_colour{
+  @include button_colour($menu-bar-item-light-colour, $menu-bar-item-dark-colour, 0 1px 1px rgba(255, 255, 255, 0.75), $menu-bar-item-text-color, 5px);
+}
+@mixin menu_bar_item_danger_colour{
+  @include button_colour(#EE5F5B, #BD362F);
+}
+@mixin menu_bar_item_primary_colour{
+  @include button_colour(#0088CC, #0055CC);
+}
+@mixin menu_bar_item_info_colour{
+  @include button_colour(#5BC0DE, #2F96B4);
+}
+@mixin menu_bar_item_success_colour{
+  @include button_colour(#62C462, #51A351);
+}
+@mixin menu_bar_item_warning_colour{
+  @include button_colour(#FBB450, #F89406);
+}
+@mixin menu_bar_item_inverse_colour{
+  @include button_colour(#555555, #222222);
 }
 
 @mixin text-field{

@@ -61,9 +61,7 @@
     // MENUS
     .menu{
       background: none repeat scroll 0 0 white;
-      border: $menu-border-width solid;
-      border-color: ($menu-bar-item-dark-colour * $menu-bar-item-border-color-fallback-multiplier); // Fallback      
-      border-color: $menu-bar-item-border-color;
+      @include menu-bar-item-border;
       border-radius: 0 0 2px 2px;
       box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
       list-style: none outside none;
@@ -122,7 +120,7 @@
       .menu_bar_item {
         background: white;
         border-radius: 2px 2px 0 0;
-        border-color: $menu-bar-item-border-color;
+        @include menu-bar-item-border-colour-with-fallback;
         border-bottom: none;
         margin-bottom: $menu-bar-item-border-width; // Make up for the loss of border so the button doesn't shift
         box-shadow: none;
@@ -179,7 +177,7 @@
       }      
       select{
         @include menu_bar_item_base;
-        @include menu_bar_item_hover;
+        // @include menu_bar_item_hover;
         height: $menu-bar-height;
         font: $menu-bar-font;
         padding: 0.4em;
