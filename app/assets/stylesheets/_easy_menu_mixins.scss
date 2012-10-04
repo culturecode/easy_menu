@@ -58,7 +58,7 @@ $menu-item-disabled-text-color: #AAA;
     @include gradient($light, $dark);
     background-color: $dark;
 
-    &:hover:not(:active){
+    &:hover:not(:active):not(.disabled){
       -moz-transition: background-position 0.1s linear 0s;
       -webkit-transition: background-position 0.1s linear 0s;
       background-position: 0 (-$shift);
@@ -134,13 +134,11 @@ $menu-item-disabled-text-color: #AAA;
 }
 @mixin menu_bar_item_pressed{
   &:active:not(.disabled), &.selected{
-    background: #f0f0f0;
-    box-shadow: 0 0 5px rgba(0,0,0,0.5) inset;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.67) inset, 0 -1px 0px rgba(255, 255, 255, .7) inset;
 
     // Make the button border appear even when in a group by popping the button up above its siblings
     z-index: $menu-bar-item-zindex + 1;
     position: relative;
-    border-color: #888;
   }    
 }
 
