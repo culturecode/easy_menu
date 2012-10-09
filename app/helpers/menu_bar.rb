@@ -36,6 +36,10 @@ class MenuBar
     yield self if block_given?
   end
 
+  def empty?
+    @content.blank?
+  end
+
   def group(options = {})
     initialize_options(options)
     
