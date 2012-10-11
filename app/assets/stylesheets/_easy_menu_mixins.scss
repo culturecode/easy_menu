@@ -93,7 +93,6 @@ $menu-bar-item-pressed-zindex: 3;
   @include menu_bar_item_base;
   @include menu_bar_item_hover;
   @include menu_bar_item_pressed;
-  @include menu_bar_item_disabled;
 
   @include menu_bar_item_default_colour;
   &.danger{  @include menu_bar_item_danger_colour  }
@@ -102,6 +101,8 @@ $menu-bar-item-pressed-zindex: 3;
   &.success{ @include menu_bar_item_success_colour }
   &.warning{ @include menu_bar_item_warning_colour }
   &.inverse{ @include menu_bar_item_inverse_colour }  
+
+  @include menu_bar_item_disabled;
 }
 
 @mixin menu_bar_item_base{
@@ -165,11 +166,8 @@ $menu-bar-item-pressed-zindex: 3;
 
 @mixin menu_bar_item_disabled{
   &.disabled{
+    @include button_colour(#fefefe, #dddede, $menu-bar-item-disabled-text-color, 0 1px 1px rgba(255, 255, 255, 0.75));
     cursor: default;
-    color: $menu-bar-item-disabled-text-color;
-    @include gradient(#fefefe, #dddede);
-    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
-    border-color: #CCC;
   }
 }
 
