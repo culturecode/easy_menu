@@ -2,6 +2,7 @@
 $menu-bar-item-horizontal-padding: 7px;
 $menu-bar-item-height: 26px;
 $menu-bar-item-min-width: $menu-bar-item-height;
+$menu-bar-item-border-radius: 2px;
 $menu-bar-item-border-darken: .1;
 $menu-bar-item-border-shadow-darken: .3;
 $menu-bar-item-border-width: 1px;
@@ -49,9 +50,10 @@ $menu-bar-item-pressed-zindex: 3;
 @mixin menu-bar-item-border($background-colour: $menu-bar-item-dark-colour){
   border: $menu-bar-item-border-width solid;
   @include menu-bar-item-border-colour-with-fallback($background-colour);
-  border-radius: 2px;
-  -moz-transition: border-color 0.1s linear 0s;
-  -webkit-transition: border-color 0.1s linear 0s;    
+  border-radius: $menu-bar-item-border-radius;
+  -moz-transition: border-color 0.2s linear;
+  -webkit-transition: border-color 0.2s linear;
+
 }
 @mixin gradient($start, $end){
   // IE 9+
@@ -82,8 +84,8 @@ $menu-bar-item-pressed-zindex: 3;
     }
 
     &:hover:not(:active):not(.disabled):not(.selected){
-      -moz-transition: background-position 0.1s linear 0s;
-      -webkit-transition: background-position 0.1s linear 0s;
+      -moz-transition: background-position 0.1s linear;
+      -webkit-transition: background-position 0.1s linear;
       background-position: 0 (-$shift);
     }
 }
@@ -172,7 +174,7 @@ $menu-bar-item-pressed-zindex: 3;
 }
 
 @mixin menu_bar_item_default_colour{
-  @include button_colour($menu-bar-item-light-colour, $menu-bar-item-dark-colour, 0 1px 1px rgba(255, 255, 255, 0.75), $menu-bar-item-text-color, 5px);
+  @include button_colour($menu-bar-item-light-colour, $menu-bar-item-dark-colour, $menu-bar-item-text-color, 0 1px 1px rgba(255, 255, 255, 0.75), 5px);
 }
 @mixin menu_bar_item_danger_colour{
   @include button_colour(#EE5F5B, #BD362F);
@@ -194,7 +196,7 @@ $menu-bar-item-pressed-zindex: 3;
 }
 
 @mixin text-field{
-  border-radius: 2px;
+  border-radius: $menu-bar-item-border-radius;
   border: 1px solid #AAA;
   height: $menu-bar-height;
   -moz-box-sizing: border-box;
