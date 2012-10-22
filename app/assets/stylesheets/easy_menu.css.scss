@@ -33,14 +33,16 @@
       margin-left: 0;
 
       .menu_bar_item{
-        border-radius: $menu-bar-item-border-radius 0 0 $menu-bar-item-border-radius;
+        border-top-left-radius: $menu-bar-item-border-radius;
+        border-bottom-left-radius: $menu-bar-item-border-radius;
       }
     }
     .menu_bar_content:last-child{
       margin-right: 0;
 
       .menu_bar_item{
-        border-radius: 0 $menu-bar-item-border-radius $menu-bar-item-border-radius 0;
+        border-top-right-radius: $menu-bar-item-border-radius;
+        border-bottom-right-radius: $menu-bar-item-border-radius;
       }      
     }
 
