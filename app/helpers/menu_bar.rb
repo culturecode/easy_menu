@@ -1,36 +1,15 @@
 # TODO make menu bar group an actual group instead of a state toggle
 class MenuBar
   include EasyMenu::Helpers
+  include EasyMenu::Configuration
 
-  DEFAULT_THEME_CLASS = 'default_theme'
-  MENU_BAR_CLASS = 'menu_bar'
-  MENU_BAR_CONTENT_CLASS = 'menu_bar_content'
-  MENU_BAR_GROUP_CLASS = 'menu_bar_group'
-  MENU_BAR_CONTENT_WITH_MENU_CLASS = 'with_menu no_js' # no_js class will be removed by browser if it has js, disabling the hover behaviour and enabling a click behaviour
-  MENU_BAR_ITEM_CLASS = 'menu_bar_item'
-  MENU_BAR_ITEM_ARROW_CLASS = 'arrow'
-  MENU_BAR_INPUT_CLASS = 'menu_bar_input'
-  MENU_BAR_SEPARATOR_CLASS = 'menu_bar_separator'
-  MENU_CLASS = 'menu'
-  MENU_CONTENT_CLASS = 'menu_content'
-  MENU_GROUP_CLASS = 'menu_group'
-  MENU_GROUP_TITLE_CLASS = 'menu_group_title'
-  MENU_ITEM_CLASS = 'menu_item'
-  MENU_SEPARATOR_CLASS = 'menu_separator'
-  CLICK_BLOCKER_CLASS = 'click_blocker'
-  SELECTED_CLASS = 'selected'
-  DISABLED_CLASS = 'disabled'
-  GROUPED_CLASS = 'grouped'
-  FIRST_GROUP_ITEM_CLASS = 'first_group_item'
-  LAST_GROUP_ITEM_CLASS = 'last_group_item'
-
-  class_attribute :css_class
-  self.css_class = MENU_BAR_CLASS
   attr_reader :content
-  
+
   def initialize(template, options = {})
     @template = template
-    @options = options.reverse_merge(:theme => DEFAULT_THEME_CLASS)
+    @options = options.reverse_merge(:theme => config[:default_theme_class])
+    config.merge! options[:config] if options[:config] # Allow per menu overriding of configuration
+    config[:template] = @template
 
     @content = []
 
@@ -44,12 +23,12 @@ class MenuBar
   def group(options = {})
     initialize_options(options)
     
-    mbg = MenuBarGroup.new(@template, options)
-    mbc = MenuBarContent.new(@template, mbg, options[:menu_bar_content])
+    mbg = MenuBarGroup.new(config, options)
+    mbc = MenuBarContent.new(config, mbg, options[:menu_bar_content])
 
     yield mbg if block_given?
     
-    @content << mbc
+    # @content << mbc
 
     return mbg
   end
@@ -62,7 +41,7 @@ class MenuBar
       content = block.call
     end
 
-    mbc = MenuBarContent.new(@template, content, options)
+    mbc = MenuBarContent.new(config, , content, options)
     @content << mbc
 
     return mbc
@@ -71,8 +50,8 @@ class MenuBar
   def menu_bar_item(content, options = {})
     initialize_options(options)
 
-    mbi = MenuBarItem.new @template, content, options
-    @content << MenuBarContent.new(@template, mbi, options[:menu_bar_content])
+    mbi = MenuBarItem.new config, content, options
+    @content << MenuBarContent.new(config, mbi, options[:menu_bar_content])
 
     return mbi
   end
@@ -80,30 +59,31 @@ class MenuBar
   def menu_bar_input(content, options = {})
     initialize_options(options)
 
-    mbin = MenuBarInput.new @template, content, options
-    mbi = MenuBarItem.new @template, mbin, options[:menu_bar_item]
-    @content << MenuBarContent.new(@template, mbi, options[:menu_bar_content])
+    mbin = MenuBarInput.new config, content, options
+    mbi = MenuBarItem.new config, mbin, options[:menu_bar_item]
+    @content << MenuBarContent.new(config, mbi, options[:menu_bar_content])
 
     return mbi
   end
 
   def menu(button_text, options = {})
     initialize_options(options)
-
-    mbi = MenuBarItem.new(@template, button_text + @template.content_tag(:span, '', :class => MENU_BAR_ITEM_ARROW_CLASS), options[:menu_bar_item])
-    m = Menu.new(@template, options)
+    puts @template.inspect
+    arrow = @template.content_tag(:span, '', :class => config[:menu_bar_item_arrow_class])
+    mbt = MenuBarTrigger.new(config, button_text + arrow, options[:menu_bar_item])
+    m = Menu.new(config, options)
 
     yield m if block_given?
 
     # We give the menu bar content a special class so we can treat its contents differently than one without a menu inside
-    @content << MenuBarContent.new(@template, [mbi, m], merge_class(options[:menu_bar_content], MENU_BAR_CONTENT_WITH_MENU_CLASS))
+    @content << MenuBarContent.new(config, [mbt, m], merge_class(options[:menu_bar_content], config[:menu_bar_content_with_menu_class]))
 
     return m
   end
 
   def separator
-    s = @template.content_tag :div, '', :class => MENU_BAR_SEPARATOR_CLASS
-    @content << MenuBarContent.new(@template, s)
+    s = @template.content_tag :div, '', :class => config[:menu_bar_separator_class]
+    @content << MenuBarContent.new(config, s)
 
     return s
   end  
@@ -128,7 +108,7 @@ class MenuBar
     html_opts = @options.slice(*html_option_keys) 
 
     # Set up the css class
-    merge_class(html_opts, css_class, @options[:theme])
+    merge_class(html_opts, config[:menu_bar_class], @options[:theme])
     merge_class(html_opts, 'no_js') if @options[:js] == false
 
     return html_opts     
@@ -139,10 +119,10 @@ class MenuBar
   class AbstractContent
     include EasyMenu::Helpers
 
-    class_attribute :css_class
-    attr_reader :content
-    def initialize(template, content, options = {})
-      @template = template
+    attr_reader :content, :config
+    def initialize(config, content, options = {})
+      @config = config
+      @template = config[:template]
       @content = content
       @options = options
     end
@@ -157,9 +137,24 @@ class MenuBar
     end
 
     private
+    def config_name
+      @config_name ||= self.class.name.underscore.gsub(/^.*\//, '')
+    end
+
+    def css_class
+      config[:"#{config_name}_class"]
+    end
+
+    def wrapper_element
+      config[:"#{config_name}_element"]
+    end
 
     def wrap_content(content)
-      @template.content_tag :li, content, html_options
+      if (wrapper_element)
+        @template.content_tag wrapper_element, content, html_options
+      else
+        content
+      end
     end
 
     def html_options
@@ -194,7 +189,7 @@ class MenuBar
     private
     
     def wrap_content(content)
-      output = @template.content_tag :div, content, html_options
+      output = super
       output << @template.content_tag(:div, '', click_blocker_html_options) if @options[:disabled] || @options[:disable_when]
       
       return output
@@ -210,8 +205,8 @@ class MenuBar
       end
 
       merge_class(html_opts, css_class)
-      merge_class(html_opts, SELECTED_CLASS) if @options[:selected]
-      merge_class(html_opts, DISABLED_CLASS) if @options[:disabled]
+      merge_class(html_opts, config[:selected_class]) if @options[:selected]
+      merge_class(html_opts, config[:disabled_class]) if @options[:disabled]
 
       return html_opts     
     end
@@ -220,7 +215,7 @@ class MenuBar
       html_opts = @click_blocker_html_options
       html_opts.reverse_merge! :title => @options[:title] # Default the title text to be the same as the unblocked title text
 
-      merge_class(html_opts, CLICK_BLOCKER_CLASS)
+      merge_class(html_opts, config[:click_blocker_class])
       
       return html_opts
     end
@@ -229,32 +224,24 @@ class MenuBar
   # CLASSES
   
   class MenuBarGroup < MenuBar
-    self.css_class = MENU_BAR_GROUP_CLASS
   end
   
   class MenuBarContent < AbstractContent
-    self.css_class = MENU_BAR_CONTENT_CLASS
   end
 
   class MenuBarItem < AbstractItem
-    self.css_class = MENU_BAR_ITEM_CLASS
+  end
+
+  class MenuBarTrigger < MenuBarItem
   end
 
   class MenuBarInput < AbstractContent
-    self.css_class = MENU_BAR_INPUT_CLASS
-    
-    private
-    
-    def wrap_content(content)
-      @template.label_tag nil, content, html_options
-    end    
   end
 
-  class Menu < AbstractContent
-    self.css_class = MENU_CLASS
-    
-    def initialize(template, options = {})
-      @template = template
+  class Menu < AbstractContent    
+    def initialize(config, options = {})
+      @config = config
+      @template = config[:template]
       @options = options
       @content = []
 
@@ -264,12 +251,12 @@ class MenuBar
     def group(title, options = {})
       initialize_options(options)
       
-      mgt = @template.content_tag(:div, title, merge_class(options[:menu_group_title], MENU_GROUP_TITLE_CLASS))
-      mg = MenuGroup.new(@template, options)
+      mgt = @template.content_tag(config[:menu_group_title_element], title, merge_class(options[:menu_group_title], config[:menu_group_title_class]))
+      mg = MenuGroup.new(config, options)
 
       yield mg if block_given?
       
-      @content << MenuContent.new(@template, [mgt, mg], options[:menu_content])
+      @content << MenuContent.new(config, [mgt, mg], options[:menu_content])
 
       return mg
     end
@@ -282,48 +269,42 @@ class MenuBar
         content = block.call
       end
       
-      @content << MenuContent.new(@template, content, options)
+      @content << MenuContent.new(config, content, options)
     end    
 
     def menu_item(content, options = {})
       initialize_options(options)
       
-      mi = MenuItem.new(@template, content, options)
-      @content << MenuContent.new(@template, mi, options[:menu_content])
+      mi = MenuItem.new(config, content, options)
+      @content << MenuContent.new(config, mi, options[:menu_content])
 
       return mi
     end
 
     def separator
-      s = @template.content_tag :div, '', :class => MENU_SEPARATOR_CLASS
-      @content << MenuContent.new(@template, s)
+      s = @template.content_tag :div, '', :class => config[:menu_separator_class]
+      @content << MenuContent.new(config, s)
 
       return s
     end    
 
     private
-
-    def wrap_content(content)
-      @template.content_tag :ul, content, html_options
-    end
     
     def initialize_options(options)
       options[:menu_item] ||= {}
       options[:menu_content] ||= {}
       options[:menu_group_title] ||= {}
+
       return options
     end    
   end
 
   class MenuGroup < Menu
-    self.css_class = MENU_GROUP_CLASS
   end
 
   class MenuContent < AbstractContent
-    self.css_class = MENU_CONTENT_CLASS
   end
 
   class MenuItem < AbstractItem
-    self.css_class = MENU_ITEM_CLASS
   end
 end
