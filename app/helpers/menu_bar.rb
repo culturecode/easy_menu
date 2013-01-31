@@ -26,7 +26,8 @@ class MenuBar
 
   class_attribute :css_class
   self.css_class = MENU_BAR_CLASS
-
+  attr_reader :content
+  
   def initialize(template, options = {})
     @template = template
     @options = options.reverse_merge(:theme => DEFAULT_THEME_CLASS)
@@ -57,10 +58,10 @@ class MenuBar
     initialize_options(options)
 
     if block_given?
-      options = content 
+      options = content || options 
       content = block.call
     end
-    
+
     mbc = MenuBarContent.new(@template, content, options)
     @content << mbc
 
@@ -145,6 +146,10 @@ class MenuBar
       @content = content
       @options = options
     end
+
+    def empty?
+      @content.blank?
+    end    
 
     def to_s
       # Treat the content as an array so we can pass multiple objects as content, e.g. when rending a menu
@@ -271,8 +276,13 @@ class MenuBar
 
     def menu_content(content = nil, options = {}, &block)
       initialize_options(options)
+
+      if block_given?
+        options = content || options  
+        content = block.call
+      end
       
-      @content << MenuContent.new(@template, (block_given? ? block.call : content), options)
+      @content << MenuContent.new(@template, content, options)
     end    
 
     def menu_item(content, options = {})
