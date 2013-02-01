@@ -23,12 +23,12 @@ class MenuBar
   def group(options = {})
     initialize_options(options)
     
-    mbg = MenuBarGroup.new(config, options)
+    mbg = MenuBarGroup.new(@template, @options.merge(options))
     mbc = MenuBarContent.new(config, mbg, options[:menu_bar_content])
 
     yield mbg if block_given?
     
-    # @content << mbc
+    @content << mbc
 
     return mbg
   end
@@ -41,7 +41,7 @@ class MenuBar
       content = block.call
     end
 
-    mbc = MenuBarContent.new(config, , content, options)
+    mbc = MenuBarContent.new(config, content, options)
     @content << mbc
 
     return mbc
@@ -49,6 +49,8 @@ class MenuBar
 
   def menu_bar_item(content, options = {})
     initialize_options(options)
+    
+    raise if config[:template].is_a?(Hash) || config[:template].nil?
 
     mbi = MenuBarItem.new config, content, options
     @content << MenuBarContent.new(config, mbi, options[:menu_bar_content])
@@ -68,7 +70,6 @@ class MenuBar
 
   def menu(button_text, options = {})
     initialize_options(options)
-    puts @template.inspect
     arrow = @template.content_tag(:span, '', :class => config[:menu_bar_item_arrow_class])
     mbt = MenuBarTrigger.new(config, button_text + arrow, options[:menu_bar_item])
     m = Menu.new(config, options)
@@ -121,6 +122,7 @@ class MenuBar
 
     attr_reader :content, :config
     def initialize(config, content, options = {})
+      raise if config[:template].is_a?(Hash) || config[:template].nil?
       @config = config
       @template = config[:template]
       @content = content
@@ -240,6 +242,8 @@ class MenuBar
 
   class Menu < AbstractContent    
     def initialize(config, options = {})
+      raise if config[:template].is_a?(Hash) || config[:template].nil?
+
       @config = config
       @template = config[:template]
       @options = options
