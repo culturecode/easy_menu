@@ -90,8 +90,8 @@ class MenuBar
   end  
 
   def to_s
-    @template.content_tag :ul, @content.collect(&:to_s).join.html_safe, html_options
-  end
+    wrap_content(@content.join.html_safe)
+  end  
 
   private
 
@@ -109,7 +109,7 @@ class MenuBar
     html_opts = @options.slice(*html_option_keys) 
 
     # Set up the css class
-    merge_class(html_opts, config[:menu_bar_class], @options[:theme])
+    merge_class(html_opts, css_class, @options[:theme])
     merge_class(html_opts, 'no_js') if @options[:js] == false
 
     return html_opts     
@@ -139,25 +139,6 @@ class MenuBar
     end
 
     private
-    def config_name
-      @config_name ||= self.class.name.underscore.gsub(/^.*\//, '')
-    end
-
-    def css_class
-      config[:"#{config_name}_class"]
-    end
-
-    def wrapper_element
-      config[:"#{config_name}_element"]
-    end
-
-    def wrap_content(content)
-      if (wrapper_element)
-        @template.content_tag wrapper_element, content, html_options
-      else
-        content
-      end
-    end
 
     def html_options
       html_opts = @options.slice(*html_option_keys) 

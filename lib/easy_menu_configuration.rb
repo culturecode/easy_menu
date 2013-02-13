@@ -34,6 +34,8 @@ module EasyMenu
       :last_group_item_class            => 'last_group_item',
       
       # ELEMENTS
+      :menu_bar_element                 => :ul,
+      :menu_bar_group_element           => :ul,
       :menu_bar_content_element         => :li,
       :menu_bar_item_element            => :div,
       :menu_bar_trigger_element         => :div,
