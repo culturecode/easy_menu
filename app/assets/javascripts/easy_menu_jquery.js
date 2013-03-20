@@ -3,7 +3,7 @@ $(document).ready(function() {
     
     // Because some browsers don't support submit buttons outside of forms triggering form submits,
     // do it in javascript just to make sure it happens
-    $('input[type=submit][form]').live('click', function(){
+    $(document).on('click', 'input[type=submit][form]', function(){
         if (form = document.getElementById(this.getAttribute('form'))) {
             // If the form is already submitting, we want don't want to submit it again.
             if ($(form).hasClass('submitting')) {
