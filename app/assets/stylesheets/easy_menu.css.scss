@@ -140,7 +140,7 @@
         box-shadow: none;
       }
 
-      z-index: $menu-bar-item-zindex + 2; // Position all the contents of this menu_content above any other menu bar item
+      z-index: $menu-bar-item-pressed-zindex + 2; // Position all the contents of this menu_content above any other menu bar item (the pressed item being the highest)
       .menu {
         display: block;
       }
