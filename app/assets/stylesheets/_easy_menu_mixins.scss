@@ -71,7 +71,7 @@ $menu-bar-item-pressed-zindex: 3;
   background-repeat: no-repeat;  
 }
 @mixin button_colour($light, $dark, $text-colour: white, $text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25), $shift: 15px){
-    color: $text-colour;
+    color: $text-colour !important; // Make this important because host app may override hover colours, but we don't want to be affected
     text-shadow: $text-shadow;
     @include menu-bar-item-border($dark);
 
