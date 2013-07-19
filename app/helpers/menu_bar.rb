@@ -7,7 +7,7 @@ class MenuBar
 
   def initialize(template, options = {})
     @template = template
-    @options = options.reverse_merge(:theme => config[:default_theme_class])
+    @options = options.reverse_merge(:theme => config[:default_theme_class], :remove_dangling_separators => true)
     config.merge! options[:config] if options[:config] # Allow per menu overriding of configuration
     config[:template] = @template
 
@@ -82,14 +82,15 @@ class MenuBar
     return m
   end
 
-  def separator
+  def separator(options = {})
     s = @template.content_tag :div, '', :class => config[:menu_bar_separator_class]
-    @content << MenuBarContent.new(config, s)
+    @content << MenuBarContent.new(config, s, options.reverse_merge(:remove_if_dangling => @options[:remove_dangling_separators]))
 
     return s
   end  
 
   def to_s
+    @content.pop if @content.last.options[:remove_if_dangling]
     wrap_content(@content.join.html_safe)
   end  
 
@@ -120,7 +121,7 @@ class MenuBar
   class AbstractContent
     include EasyMenu::Helpers
 
-    attr_reader :content, :config
+    attr_reader :content, :config, :options
     def initialize(config, content, options = {})
       raise if config[:template].is_a?(Hash) || config[:template].nil?
       @config = config
