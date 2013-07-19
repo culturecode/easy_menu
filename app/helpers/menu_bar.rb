@@ -90,7 +90,7 @@ class MenuBar
   end  
 
   def to_s
-    @content.pop if @content.last.options[:remove_if_dangling]
+    @content.pop if @content.last && @content.last.options[:remove_if_dangling]
     wrap_content(@content.join.html_safe)
   end  
 
