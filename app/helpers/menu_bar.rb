@@ -22,12 +22,12 @@ class MenuBar
 
   def group(options = {})
     initialize_options(options)
-    
+
     mbg = MenuBarGroup.new(@template, @options.merge(options))
     mbc = MenuBarContent.new(config, mbg, options[:menu_bar_content])
 
     yield mbg if block_given?
-    
+
     @content << mbc
 
     return mbg
@@ -37,7 +37,7 @@ class MenuBar
     initialize_options(options)
 
     if block_given?
-      options = content || options 
+      options = content || options
       content = block.call
     end
 
@@ -49,7 +49,7 @@ class MenuBar
 
   def menu_bar_item(content, options = {})
     initialize_options(options)
-    
+
     raise if config[:template].is_a?(Hash) || config[:template].nil?
 
     mbi = MenuBarItem.new config, content, options
@@ -87,37 +87,37 @@ class MenuBar
     @content << MenuBarContent.new(config, s, options.reverse_merge(:remove_if_dangling => @options[:remove_dangling_separators]))
 
     return s
-  end  
+  end
 
   def to_s
     @content.pop if @content.last && @content.last.options[:remove_if_dangling]
     wrap_content(@content.join.html_safe)
-  end  
+  end
 
   private
 
   def initialize_options(options)
     options[:menu_bar_item] ||= {}
     options[:menu_bar_content] ||= {}
-    
+
     # Alignment always lies with the content wrapper
     options[:menu_bar_content][:align] = options.delete(:align)
-    
+
     return options
   end
 
   def html_options
-    html_opts = @options.slice(*html_option_keys) 
+    html_opts = @options.slice(*html_option_keys)
 
     # Set up the css class
     merge_class(html_opts, css_class, @options[:theme])
     merge_class(html_opts, 'no_js') if @options[:js] == false
 
-    return html_opts     
+    return html_opts
   end
-    
+
   # ABSTRACT CLASSES
-  
+
   class AbstractContent
     include EasyMenu::Helpers
 
@@ -132,7 +132,7 @@ class MenuBar
 
     def empty?
       @content.blank?
-    end    
+    end
 
     def to_s
       # Treat the content as an array so we can pass multiple objects as content, e.g. when rending a menu
@@ -142,11 +142,11 @@ class MenuBar
     private
 
     def html_options
-      html_opts = @options.slice(*html_option_keys) 
+      html_opts = @options.slice(*html_option_keys)
       merge_class(html_opts, css_class, @options[:align])
 
-      return html_opts     
-    end    
+      return html_opts
+    end
   end
 
   class AbstractItem < AbstractContent
@@ -162,25 +162,25 @@ class MenuBar
 
       return self
     end
-    
+
     # Set the button up to disable when a particular DOM Event occurs
     def disable_when(observable_dom_element, dom_event, js_condition, click_blocker_html_options = {})
       @options[:disable_when] = {:element => observable_dom_element, :event => dom_event, :condition => js_condition}
       @click_blocker_html_options = click_blocker_html_options
       return self
     end
-    
+
     private
-    
+
     def wrap_content(content)
       output = super
       output << @template.content_tag(:div, '', click_blocker_html_options) if @options[:disabled] || @options[:disable_when]
-      
+
       return output
     end
-    
+
     def html_options
-      html_opts = @options.slice(*html_option_keys) 
+      html_opts = @options.slice(*html_option_keys)
 
       if @options[:disable_when]
         html_opts[:'data-disable-event-element'] = @options[:disable_when][:element]
@@ -192,24 +192,24 @@ class MenuBar
       merge_class(html_opts, config[:selected_class]) if @options[:selected]
       merge_class(html_opts, config[:disabled_class]) if @options[:disabled]
 
-      return html_opts     
+      return html_opts
     end
-    
+
     def click_blocker_html_options
       html_opts = @click_blocker_html_options
       html_opts.reverse_merge! :title => @options[:title] # Default the title text to be the same as the unblocked title text
 
       merge_class(html_opts, config[:click_blocker_class])
-      
+
       return html_opts
     end
-  end  
-  
+  end
+
   # CLASSES
-  
+
   class MenuBarGroup < MenuBar
   end
-  
+
   class MenuBarContent < AbstractContent
   end
 
@@ -222,7 +222,7 @@ class MenuBar
   class MenuBarInput < AbstractContent
   end
 
-  class Menu < AbstractContent    
+  class Menu < AbstractContent
     def initialize(config, options = {})
       raise if config[:template].is_a?(Hash) || config[:template].nil?
 
@@ -236,12 +236,12 @@ class MenuBar
 
     def group(title, options = {})
       initialize_options(options)
-      
+
       mgt = @template.content_tag(config[:menu_group_title_element], title, merge_class(options[:menu_group_title], config[:menu_group_title_class]))
       mg = MenuGroup.new(config, options)
 
       yield mg if block_given?
-      
+
       @content << MenuContent.new(config, [mgt, mg], options[:menu_content])
 
       return mg
@@ -251,16 +251,16 @@ class MenuBar
       initialize_options(options)
 
       if block_given?
-        options = content || options  
+        options = content || options
         content = block.call
       end
-      
+
       @content << MenuContent.new(config, content, options)
-    end    
+    end
 
     def menu_item(content, options = {})
       initialize_options(options)
-      
+
       mi = MenuItem.new(config, content, options)
       @content << MenuContent.new(config, mi, options[:menu_content])
 
@@ -272,17 +272,17 @@ class MenuBar
       @content << MenuContent.new(config, s)
 
       return s
-    end    
+    end
 
     private
-    
+
     def initialize_options(options)
       options[:menu_item] ||= {}
       options[:menu_content] ||= {}
       options[:menu_group_title] ||= {}
 
       return options
-    end    
+    end
   end
 
   class MenuGroup < Menu

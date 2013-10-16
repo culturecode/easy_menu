@@ -43,7 +43,7 @@
       .menu_bar_item{
         border-top-right-radius: $menu-bar-item-border-radius;
         border-bottom-right-radius: $menu-bar-item-border-radius;
-      }      
+      }
     }
 
   }
@@ -92,7 +92,7 @@
 
         .menu_item{
           @include menu_item;
-        }        
+        }
         .menu_group_title{
           @include menu_item_base;
           background: none repeat scroll 0 0 #EEEEEE;
@@ -146,11 +146,11 @@
       }
     }
 
-    // Allow right alignment of buttons  
+    // Allow right alignment of buttons
     &.right{
       float: right;
       margin: 0 0 0 $menu-bar-item-spacing;
-      
+
       .menu {
         right: 0;
       }
@@ -188,7 +188,7 @@
         display: inline-block;
         vertical-align: top;
         height: $menu-bar-item-height;
-      }      
+      }
       select{
         @include menu_bar_item_base;
         // @include menu_bar_item_hover;
@@ -200,7 +200,7 @@
           text-shadow: none;
           padding: 0.4em;
         }
-      }        
+      }
     }
   }
 }
@@ -212,5 +212,5 @@
   .menu_bar_content:last-child .menu_bar_item{
     border-top-right-radius: 14px;
     border-bottom-right-radius: 14px;
-  }    
+  }
 }

@@ -1,6 +1,6 @@
 $(document).ready(function() {
     var menuBarRootSelector = '.menu_bar:not(.no_js) ';
-    
+
     // Because some browsers don't support submit buttons outside of forms triggering form submits,
     // do it in javascript just to make sure it happens
     $(document).on('click', 'input[type=submit][form]', function(){
@@ -29,7 +29,7 @@ $(document).ready(function() {
         $(menuBarRootSelector + '.menu_bar_content.with_menu').not(mbc).removeClass('open');
         mbc.toggleClass('open');
     });
-    
+
     $('body').click(function(event){
         if ($(event.target).closest('.menu_bar_content.with_menu .menu_bar_item').length > 0) { return } // Don't close the menus if the click came from a menu
         $(menuBarRootSelector + '.menu_bar_content.with_menu.open').removeClass('open');
@@ -47,7 +47,7 @@ $(document).ready(function() {
                 mbi.addClass('disabled');
             } else {
                 mbi.removeClass('disabled');
-            }  
+            }
         }
 
         // Init the current state and bind the observer

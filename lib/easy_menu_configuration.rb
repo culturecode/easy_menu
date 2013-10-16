@@ -4,7 +4,7 @@ module EasyMenu
       base.class_eval do
         class_attribute :config
         self.config = Hash.new{|hash, key| raise "#{key} has not been set in Easy Menu Configuration"}.merge(Default)
-      end      
+      end
     end
 
     Default = {
@@ -32,7 +32,7 @@ module EasyMenu
       :grouped_class                    => 'grouped',
       :first_group_item_class           => 'first_group_item',
       :last_group_item_class            => 'last_group_item',
-      
+
       # ELEMENTS
       :menu_bar_element                 => :ul,
       :menu_bar_group_element           => :ul,
@@ -45,7 +45,7 @@ module EasyMenu
       :menu_content_element             => :li,
       :menu_group_title_element         => :div,
       :menu_group_element               => :ul,
-      :menu_item_element                => :div      
+      :menu_item_element                => :div
     }
 
     Bootstrap =  {

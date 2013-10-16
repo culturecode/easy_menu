@@ -14,7 +14,7 @@ if defined?(Sass)
       if outuri.length > 32768
         raise ArgumentError.new("Data URI is greater than 32KiB in size, that is the max size of data urls in IE8.")
       end
-      
+
       Sass::Script::String.new("url('#{outuri}')")
     end
   end

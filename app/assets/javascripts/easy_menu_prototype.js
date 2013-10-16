@@ -22,7 +22,7 @@ $(document).observe('dom:loaded', function() {
 
     // Allow users to open an close menus by clicking
     $$(menuBarRootSelector + '.menu_bar_content.with_menu').invoke('removeClassName', 'no_js');
-    $$(menuBarRootSelector + '.menu_bar_content.with_menu .menu_bar_item').invoke('observe', 'click', function(event){        
+    $$(menuBarRootSelector + '.menu_bar_content.with_menu .menu_bar_item').invoke('observe', 'click', function(event){
         var mbc = $(event.element()).up('.menu_bar_content');
         $$('.menu_bar_content.with_menu').without(mbc).invoke('removeClassName', 'open');
         mbc.toggleClassName('open');
@@ -44,7 +44,7 @@ $(document).observe('dom:loaded', function() {
                 mbi.addClassName('disabled');
             } else {
                 mbi.removeClassName('disabled');
-            }  
+            }
         }
 
         // Init the current state and bind the observer

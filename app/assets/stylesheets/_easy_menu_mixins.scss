@@ -31,12 +31,12 @@ $menu-bar-item-pressed-zindex: 3;
 @mixin no-select{
   -moz-user-select: none;
   -webkit-user-select: none;
-  user-select: none;    
+  user-select: none;
 }
 @mixin no-drag{
   -moz-user-drag: none;
   -webkit-user-drag: none;
-  user-drag: none;  
+  user-drag: none;
 }
 @mixin menu-bar-item-border-shadow-with-fallback($background-colour: $menu-bar-item-dark-colour){
   border-bottom-color: darken($background-colour, percentage($menu-bar-item-border-shadow-darken)); // Fallback
@@ -67,8 +67,8 @@ $menu-bar-item-pressed-zindex: 3;
 
   background-image: -moz-linear-gradient(top, $start 0%, $end 100%);
   background-image: -webkit-linear-gradient(top, $start 0%, $end 100%);
-  background-image: linear-gradient(top, $start 0%, $end 100%);                
-  background-repeat: no-repeat;  
+  background-image: linear-gradient(top, $start 0%, $end 100%);
+  background-repeat: no-repeat;
 }
 @mixin button_colour($light, $dark, $text-colour: white, $text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25), $shift: 15px){
     color: $text-colour !important; // Make this important because host app may override hover colours, but we don't want to be affected
@@ -102,7 +102,7 @@ $menu-bar-item-pressed-zindex: 3;
   &.info{    @include menu_bar_item_info_colour    }
   &.success{ @include menu_bar_item_success_colour }
   &.warning{ @include menu_bar_item_warning_colour }
-  &.inverse{ @include menu_bar_item_inverse_colour }  
+  &.inverse{ @include menu_bar_item_inverse_colour }
 
   @include menu_bar_item_disabled;
 }
@@ -128,10 +128,10 @@ $menu-bar-item-pressed-zindex: 3;
     position: relative;
     bottom: 1px;
   }
-  
+
   > a, > label{
     cursor: pointer; // Override browser default on labels
-    text-decoration: none;        
+    text-decoration: none;
     // Make the a fill the hoverable area of the button so clicking anywhere triggers the link
     margin: -$menu-bar-item-horizontal-padding (-$menu-bar-item-horizontal-padding - $menu-bar-item-border-width);
     padding: $menu-bar-item-horizontal-padding ($menu-bar-item-horizontal-padding + $menu-bar-item-border-width);
@@ -145,7 +145,7 @@ $menu-bar-item-pressed-zindex: 3;
     position: absolute;
     z-index: -1;
     left: -9999px;
-  }    
+  }
 }
 @mixin menu_bar_item_hover{
   &:hover{
@@ -163,7 +163,7 @@ $menu-bar-item-pressed-zindex: 3;
     box-shadow: 0 -1px 1px rgba(255, 255, 255, 0.4) inset, 0 2px 2px rgba(0, 0, 0, .3) inset;
     z-index: $menu-bar-item-pressed-zindex;
     position: relative;
-  }    
+  }
 }
 
 @mixin menu_bar_item_disabled{
