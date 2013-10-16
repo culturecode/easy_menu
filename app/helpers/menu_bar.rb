@@ -23,7 +23,7 @@ class MenuBar
   def group(options = {})
     initialize_options(options)
 
-    mbg = MenuBarGroup.new(@template, @options.merge(options))
+    mbg = MenuBarGroup.new(@template, options.merge(@options.slice(:config)))
     mbc = MenuBarContent.new(config, mbg, options[:menu_bar_content])
 
     yield mbg if block_given?
