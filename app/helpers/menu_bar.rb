@@ -70,14 +70,16 @@ class MenuBar
 
   def menu(button_text, options = {})
     initialize_options(options)
+
     arrow = @template.content_tag(:span, '', :class => config[:menu_bar_item_arrow_class])
-    mbt = MenuBarTrigger.new(config, button_text + arrow, options[:menu_bar_item])
+
     m = Menu.new(config, options)
+    mbt = MenuBarTrigger.new(config, button_text.html_safe + arrow, m, options[:menu_bar_item])
 
     yield m if block_given?
 
     # We give the menu bar content a special class so we can treat its contents differently than one without a menu inside
-    @content << MenuBarContent.new(config, [mbt, m], merge_class(options[:menu_bar_content], config[:menu_bar_content_with_menu_class]))
+    @content << MenuBarContent.new(config, mbt, merge_class(options[:menu_bar_content], config[:menu_bar_content_with_menu_class]))
 
     return m
   end
@@ -126,17 +128,16 @@ class MenuBar
       raise if config[:template].is_a?(Hash) || config[:template].nil?
       @config = config
       @template = config[:template]
-      @content = content
+      @content = Array(content)
       @options = options
     end
 
     def empty?
-      @content.blank?
+      @content.join.blank?
     end
 
     def to_s
-      # Treat the content as an array so we can pass multiple objects as content, e.g. when rending a menu
-      wrap_content(Array(@content).collect(&:to_s).join.html_safe)
+      empty? ? '' : wrap_content(@content.join.html_safe) # Don't render anything if empty
     end
 
     private
@@ -217,6 +218,19 @@ class MenuBar
   end
 
   class MenuBarTrigger < MenuBarItem
+    def initialize(config, content, menu, options)
+      @menu = menu
+      super(config, content, options)
+    end
+
+    # If the menu has no content, don't show the menu bar trigger
+    def empty?
+      @menu.empty?
+    end
+
+    def to_s
+      super + @menu.to_s
+    end
   end
 
   class MenuBarInput < AbstractContent
