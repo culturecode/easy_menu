@@ -229,10 +229,10 @@ $menu-bar-item-pressed-zindex: 3;
 }
 @mixin menu_item_hover {
   &.selected a {
-    background: url("/assets/checkbox_selected.png") no-repeat 5px center;
+    background: asset_url("checkbox_selected.png") no-repeat 5px center;
 
     &:hover {
-      background: url("/assets/checkbox_selected_hovered.png") no-repeat 5px center;
+      background: asset_url("checkbox_selected_hovered.png") no-repeat 5px center;
     }
   }
   &:hover {

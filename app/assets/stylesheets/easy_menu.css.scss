@@ -122,7 +122,7 @@
     }
     &.with_menu {
       .menu_bar_item .arrow{
-        background: url('/assets/arrows.png') center 87px;
+        background: asset_url('arrows.png') center 87px;
         display: inline-block;
         margin-left: 3px;
         height: 10px;
