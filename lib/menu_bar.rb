@@ -1,4 +1,7 @@
 # TODO make menu bar group an actual group instead of a state toggle
+require 'easy_menu_helpers'
+require 'easy_menu_configuration'
+
 class MenuBar
   include EasyMenu::Helpers
   include EasyMenu::Configuration
@@ -42,7 +45,8 @@ class MenuBar
     end
 
     mbc = MenuBarContent.new(config, content, options)
-    @content << mbc
+
+    store_menu_bar_content(mbc)
 
     return mbc
   end
@@ -53,7 +57,9 @@ class MenuBar
     raise if config[:template].is_a?(Hash) || config[:template].nil?
 
     mbi = MenuBarItem.new config, content, options
-    @content << MenuBarContent.new(config, mbi, options[:menu_bar_content])
+    mbc = MenuBarContent.new(config, mbi, options[:menu_bar_content])
+
+    store_menu_bar_content(mbc)
 
     return mbi
   end
@@ -63,7 +69,9 @@ class MenuBar
 
     mbin = MenuBarInput.new config, content, options
     mbi = MenuBarItem.new config, mbin, options[:menu_bar_item]
-    @content << MenuBarContent.new(config, mbi, options[:menu_bar_content])
+    mbc = MenuBarContent.new(config, mbi, options[:menu_bar_content])
+
+    store_menu_bar_content(mbc)
 
     return mbi
   end
@@ -79,14 +87,18 @@ class MenuBar
     yield m if block_given?
 
     # We give the menu bar content a special class so we can treat its contents differently than one without a menu inside
-    @content << MenuBarContent.new(config, mbt, merge_class(options[:menu_bar_content], config[:menu_bar_content_with_menu_class]))
+    mbc = MenuBarContent.new(config, mbt, merge_class(options[:menu_bar_content], config[:menu_bar_content_with_menu_class]))
+
+    store_menu_bar_content(mbc)
 
     return m
   end
 
   def separator(options = {})
     s = @template.content_tag :div, '', :class => config[:menu_bar_separator_class]
-    @content << MenuBarContent.new(config, s, options.reverse_merge(:remove_if_dangling => @options[:remove_dangling_separators]))
+    mbc = MenuBarContent.new(config, s, options.reverse_merge(:remove_if_dangling => @options[:remove_dangling_separators]))
+
+    store_menu_bar_content(mbc)
 
     return s
   end
@@ -103,7 +115,7 @@ class MenuBar
     options[:menu_bar_content] ||= {}
 
     # Alignment always lies with the content wrapper
-    options[:menu_bar_content][:align] = options.delete(:align)
+    options[:menu_bar_content][:align] ||= options.delete(:align)
 
     return options
   end
@@ -116,6 +128,15 @@ class MenuBar
     merge_class(html_opts, 'no_js') if @options[:js] == false
 
     return html_opts
+  end
+
+  # Ensure that right aligned menu bar content appears on the page in the order it is inserted
+  def store_menu_bar_content(mbc)
+    if mbc.options[:align].to_s == 'right'
+      @content.prepend(mbc)
+    else
+      @content << mbc
+    end
   end
 
   # ABSTRACT CLASSES

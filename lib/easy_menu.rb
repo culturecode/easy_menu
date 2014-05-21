@@ -1,6 +1,5 @@
 module EasyMenu
-	require 'easy_menu_helpers'
-  require 'easy_menu_configuration'
+  require 'menu_bar'
 
 	class Engine < Rails::Engine
 	end
