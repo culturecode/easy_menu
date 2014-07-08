@@ -6,7 +6,7 @@ class MenuBar
   include EasyMenu::Helpers
   include EasyMenu::Configuration
 
-  attr_reader :content
+  attr_reader :content, :groups
 
   def initialize(template, options = {})
     @template = template
@@ -15,6 +15,7 @@ class MenuBar
     config[:template] = @template
 
     @content = []
+    @groups = [] # Subset of content that allows user to perform simpler non-sequential insertion into a particular group
 
     yield self if block_given?
   end
@@ -31,7 +32,8 @@ class MenuBar
 
     yield mbg if block_given?
 
-    @content << mbc
+    store_menu_bar_content(mbc)
+    @groups << mbg
 
     return mbg
   end
@@ -132,7 +134,7 @@ class MenuBar
 
   # Ensure that right aligned menu bar content appears on the page in the order it is inserted
   def store_menu_bar_content(mbc)
-    if mbc.options[:align].to_s == 'right'
+    if mbc.right_aligned?
       @content.prepend(mbc)
     else
       @content << mbc
@@ -159,6 +161,10 @@ class MenuBar
 
     def to_s
       empty? ? '' : wrap_content(@content.join.html_safe) # Don't render anything if empty
+    end
+
+    def right_aligned?
+      options[:align].to_s == 'right'
     end
 
     private
