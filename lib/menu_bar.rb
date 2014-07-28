@@ -224,7 +224,7 @@ class MenuBar
     end
 
     def click_blocker_html_options
-      html_opts = @click_blocker_html_options
+      html_opts = @click_blocker_html_options.dup
       html_opts.reverse_merge! :title => @options[:title] # Default the title text to be the same as the unblocked title text
 
       merge_class(html_opts, config[:click_blocker_class])

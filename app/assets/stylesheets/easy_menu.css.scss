@@ -83,6 +83,7 @@
       padding: $menu-vertical-padding 0;
       position: absolute;
       display: none;
+      min-width: 100%; // Don't be narrower than the menu bar trigger
 
       .menu_content{
         display: block;
@@ -122,11 +123,12 @@
     }
     &.with_menu {
       .menu_bar_item .arrow{
-        background: asset_url('arrows.png') center 87px;
-        display: inline-block;
-        margin-left: 3px;
-        height: 10px;
+        @include icon(5, center);
+        margin: -12px -9px -12px -4px;
+        padding: 24px 14px 0 0;
+        vertical-align: middle;
         width: 10px;
+        display: inline-block;
         vertical-align: middle;
       }
     }

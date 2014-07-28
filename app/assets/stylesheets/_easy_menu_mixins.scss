@@ -219,7 +219,7 @@ $menu-bar-item-pressed-zindex: 3;
   padding: $menu-item-vertical-padding $menu-item-horizontal-padding;
   cursor: pointer;
 
-  a {
+  > * {
     color: $menu-bar-item-text-color;
     padding: $menu-item-vertical-padding $menu-item-horizontal-padding;
     margin: (-$menu-item-vertical-padding) (-$menu-item-horizontal-padding);
@@ -228,25 +228,31 @@ $menu-bar-item-pressed-zindex: 3;
   }
 }
 @mixin menu_item_hover {
-  &.selected a {
-    background: asset_url("checkbox_selected.png") no-repeat 5px center;
+  &.selected > * {
+    @include icon(9, 5px);
 
     &:hover {
-      background: asset_url("checkbox_selected_hovered.png") no-repeat 5px center;
+      @include icon(10, 6px); // Keep the icon from shifting due to the margin change below
     }
   }
   &:hover {
-    background: #08C;
+    background: #3675ca;
     color: white;
+    margin: 0 -1px; // Make the highlight cover the borders
+    text-indent: 1px; // Keep the text from shifting due to the margin change
 
-    a {
+    > * {
       color: inherit;
     }
   }
 }
 @mixin menu_item_disabled{
-  &.disabled, &.disabled a{
+  &.disabled, &.disabled > *{
     cursor: default;
     color: $menu-item-disabled-text-color;
   }
+}
+
+@mixin icon($iconNumber, $indent:center){
+  background: asset_url('icons.png') $indent -24px * ($iconNumber - 1) no-repeat;
 }
