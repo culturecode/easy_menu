@@ -232,14 +232,17 @@ $menu-bar-item-pressed-zindex: 3;
     @include icon(9, 5px);
 
     &:hover {
-      @include icon(10, 6px); // Keep the icon from shifting due to the margin change below
+      @include icon(10, 5px);
     }
   }
   &:hover {
     background: #3675ca;
     color: white;
-    margin: 0 -1px; // Make the highlight cover the borders
-    text-indent: 1px; // Keep the text from shifting due to the margin change
+    // Make the highlight cover the borders
+    // Keep the text from shifting due to the margin change
+    margin: 0 -1px;
+    border: solid #3675ca;
+    border-width: 0 1px;
 
     > * {
       color: inherit;
