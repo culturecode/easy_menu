@@ -123,7 +123,7 @@
     }
     &.with_menu {
       .menu_bar_item .arrow{
-        @include icon(5, center);
+        @include easy_menu_icon(5, center);
         margin: -12px -9px -12px -4px;
         padding: 24px 14px 0 0;
         vertical-align: middle;
