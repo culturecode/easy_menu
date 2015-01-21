@@ -30,7 +30,8 @@ $(document).ready(function() {
         mbc.toggleClass('open');
     });
 
-    $('body').click(function(event){
+    // Close the menu if the user clicked outside
+    $(document).click(function(event){
         if ($(event.target).closest('.menu_bar_content.with_menu .menu_bar_item').length > 0) { return } // Don't close the menus if the click came from a menu
         $(menuBarRootSelector + '.menu_bar_content.with_menu.open').removeClass('open');
     });
