@@ -110,6 +110,14 @@ class MenuBar
     wrap_content(@content.join.html_safe)
   end
 
+  def to_str
+    to_s
+  end
+
+  def html_safe?
+    true
+  end
+
   private
 
   def initialize_options(options)
