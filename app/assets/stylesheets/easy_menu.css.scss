@@ -96,6 +96,7 @@
         }
         .menu_group_title{
           @include menu_item_base;
+          cursor: default; // Don't use the pointer cursor from menu_item_base
           background: none repeat scroll 0 0 #EEEEEE;
           color: #888888;
           font-weight: bold;
