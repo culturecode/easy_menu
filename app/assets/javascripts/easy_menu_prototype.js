@@ -1,3 +1,5 @@
+// TODO: Fire event when menu is opened or closed - jQuery version works like this
+
 $(document).observe('dom:loaded', function() {
     var menuBarRootSelector = '.menu_bar:not(.no_js) ';
 

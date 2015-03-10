@@ -27,13 +27,16 @@ $(document).ready(function() {
     $(menuBarRootSelector + '.menu_bar_content.with_menu .menu_bar_item').click(function(){
         var mbc = $(this).closest('.menu_bar_content');
         $(menuBarRootSelector + '.menu_bar_content.with_menu').not(mbc).removeClass('open');
-        mbc.toggleClass('open');
+        mbc.toggleClass('open')
+          .find('.menu').trigger('opened')
     });
 
     // Close the menu if the user clicked outside
     $(document).click(function(event){
         if ($(event.target).closest('.menu_bar_content.with_menu .menu_bar_item').length > 0) { return } // Don't close the menus if the click came from a menu
-        $(menuBarRootSelector + '.menu_bar_content.with_menu.open').removeClass('open');
+        $(menuBarRootSelector + '.menu_bar_content.with_menu.open')
+          .removeClass('open')
+          .find('.menu').trigger('closed')
     });
 
     // Disable Elements with a disable condition when that condition is met
