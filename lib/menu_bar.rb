@@ -164,7 +164,7 @@ class MenuBar
     end
 
     def empty?
-      @content.join.blank?
+      @content.all?(&:blank?)
     end
 
     def to_s
