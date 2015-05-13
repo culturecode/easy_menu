@@ -32,7 +32,7 @@ class MenuBar
 
     yield mbg if block_given?
 
-    store_menu_bar_content(mbc)
+    store_menu_bar_content(mbc, options)
     @groups << mbg
 
     return mbg
@@ -48,7 +48,7 @@ class MenuBar
 
     mbc = MenuBarContent.new(config, content, options)
 
-    store_menu_bar_content(mbc)
+    store_menu_bar_content(mbc, options)
 
     return mbc
   end
@@ -61,7 +61,7 @@ class MenuBar
     mbi = MenuBarItem.new config, content, options
     mbc = MenuBarContent.new(config, mbi, options[:menu_bar_content])
 
-    store_menu_bar_content(mbc)
+    store_menu_bar_content(mbc, options)
 
     return mbi
   end
@@ -73,7 +73,7 @@ class MenuBar
     mbi = MenuBarItem.new config, mbin, options[:menu_bar_item]
     mbc = MenuBarContent.new(config, mbi, options[:menu_bar_content])
 
-    store_menu_bar_content(mbc)
+    store_menu_bar_content(mbc, options)
 
     return mbi
   end
@@ -91,7 +91,7 @@ class MenuBar
     # We give the menu bar content a special class so we can treat its contents differently than one without a menu inside
     mbc = MenuBarContent.new(config, mbt, merge_class(options[:menu_bar_content], config[:menu_bar_content_with_menu_class]))
 
-    store_menu_bar_content(mbc)
+    store_menu_bar_content(mbc, options)
 
     return m
   end
@@ -100,7 +100,7 @@ class MenuBar
     s = @template.content_tag :div, '', :class => config[:menu_bar_separator_class]
     mbc = MenuBarContent.new(config, s, options.reverse_merge(:remove_if_dangling => @options[:remove_dangling_separators]))
 
-    store_menu_bar_content(mbc)
+    store_menu_bar_content(mbc, options)
 
     return s
   end
@@ -140,9 +140,11 @@ class MenuBar
     return html_opts
   end
 
-  # Ensure that right aligned menu bar content appears on the page in the order it is inserted
-  def store_menu_bar_content(mbc)
-    if mbc.right_aligned?
+  def store_menu_bar_content(mbc, options = {})
+    if options[:index]
+      @content.insert(options[:index], mbc)
+    # Ensure that right aligned menu bar content appears on the page in the order it is inserted
+    elsif mbc.right_aligned?
       @content.prepend(mbc)
     else
       @content << mbc
@@ -291,7 +293,9 @@ class MenuBar
 
       yield mg if block_given?
 
-      @content << MenuContent.new(config, [mgt, mg], options[:menu_content])
+      mc = MenuContent.new(config, [mgt, mg], options[:menu_content])
+
+      store_menu_content(mc, options)
 
       return mg
     end
@@ -304,21 +308,27 @@ class MenuBar
         content = block.call
       end
 
-      @content << MenuContent.new(config, content, options)
+      mc = MenuContent.new(config, content, options)
+
+      store_menu_content(mc, options)
     end
 
     def menu_item(content, options = {})
       initialize_options(options)
 
       mi = MenuItem.new(config, content, options)
-      @content << MenuContent.new(config, mi, options[:menu_content])
+      mc = MenuContent.new(config, mi, options[:menu_content])
+
+      store_menu_content(mc, options)
 
       return mi
     end
 
-    def separator
+    def separator(options = {})
       s = @template.content_tag :div, '', :class => config[:menu_separator_class]
-      @content << MenuContent.new(config, s)
+      mc = MenuContent.new(config, s)
+
+      store_menu_content(mc, options)
 
       return s
     end
@@ -331,6 +341,14 @@ class MenuBar
       options[:menu_group_title] ||= {}
 
       return options
+    end
+
+    def store_menu_content(mc, options = {})
+      if options[:index]
+        @content.insert(options[:index], mc)
+      else
+        @content << mc
+      end
     end
   end
 
