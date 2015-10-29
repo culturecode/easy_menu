@@ -171,6 +171,9 @@ $menu-bar-item-pressed-zindex: 3;
     @include button_colour(#fefefe, #dddede, $menu-bar-item-disabled-text-color, 0 1px 1px rgba(255, 255, 255, 0.75));
     cursor: default;
   }
+  &.disabled:active{
+    box-shadow: none;
+  }
 }
 
 @mixin menu_bar_item_default_colour{
