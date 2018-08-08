@@ -22,7 +22,7 @@ $(document).ready(function() {
         $(this).addClass('submitting');
     });
 
-    // Allow users to open an close menus by clicking
+    // Allow users to open and close menus by clicking
     $(menuBarRootSelector + '.menu_bar_content.with_menu').removeClass('no_js');
     $(menuBarRootSelector + '.menu_bar_content.with_menu .menu_bar_item').click(function(){
         var mbc = $(this).closest('.menu_bar_content');
@@ -31,9 +31,14 @@ $(document).ready(function() {
           .find('.menu').trigger('opened')
     });
 
-    // Close the menu if the user clicked outside
-    $(document).click(function(event){
-        if ($(event.target).closest('.menu_bar_content.with_menu .menu_bar_item').length > 0) { return } // Don't close the menus if the click came from a menu
+    // Close the menu when the user clicks or there is a form submission
+    $(document).on('click submit', function(event) {
+        // Don't close the menu if the click was on a menu_bar_item. This case is handled by the previous event handler
+        if ($(event.target).closest('.menu_bar_content.with_menu .menu_bar_item').length > 0) { return }
+
+        // Don't close if we clicked inside a menu but not on a menu_item
+        if ($(event.target).closest('.menu').length > 0 && $(event.target).closest('.menu_item').length === 0) { return }
+
         $(menuBarRootSelector + '.menu_bar_content.with_menu.open')
           .removeClass('open')
           .find('.menu').trigger('closed')
