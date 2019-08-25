@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name = "easy_menu"
   s.summary = "Simple menu bar dsl for Rails views"
-  s.files = Dir["{app,lib,config}/**/*"] + ["MIT-LICENSE", "Gemfile", "README"]
+  s.files = Dir["{app,lib,config}/**/*"] + ["MIT-LICENSE", "README"]
   s.version = "0.4.10"
   s.authors = ['Nicholas Jakobsen', 'Ryan Wallace']
 
