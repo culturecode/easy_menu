@@ -72,24 +72,18 @@ $menu-bar-item-pressed-zindex: 3;
   background-image: linear-gradient(top, $start 0%, $end 100%);
   background-repeat: no-repeat;
 }
-@mixin button_colour($light, $dark, $text-colour: white, $text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25), $shift: 15px){
-    color: $text-colour !important; // Make this important because host app may override hover colours, but we don't want to be affected
-    text-shadow: $text-shadow;
-    @include menu-bar-item-border($dark);
+@mixin button_colour($light, $dark, $text-colour: white, $text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25)){
+  color: $text-colour !important; // Make this important because host app may override hover colours, but we don't want to be affected
+  text-shadow: $text-shadow;
+  @include menu-bar-item-border($dark);
 
-    background-color: mix($light, $dark);
+  background-color: mix($light, $dark);
 
-    // Don't override the background if the browser doesn't support gradients otherwise the buttons will be too dark
-    &:not(oldbrowser){
-      @include gradient($light, $dark);
-      background-color: $dark;
-    }
-
-    &:hover:not(:active):not(.disabled):not(.selected){
-      -moz-transition: background-position 0.1s linear;
-      -webkit-transition: background-position 0.1s linear;
-      background-position: 0 (-$shift);
-    }
+  // Don't override the background if the browser doesn't support gradients otherwise the buttons will be too dark
+  &:not(oldbrowser){
+    @include gradient($light, $dark);
+    background-color: $dark;
+  }
 }
 
 // STYLES
@@ -149,13 +143,17 @@ $menu-bar-item-pressed-zindex: 3;
     left: -9999px;
   }
 }
-@mixin menu_bar_item_hover{
-  &:hover{
+@mixin menu_bar_item_hover($gradient-shift: 15px) {
+  &:hover:not(.disabled):not(.selected) {
     border-color: #888; // Fallback
     border-color: rgba(0,0,0, $menu-bar-item-border-darken * 2);
     border-bottom-color: rgba(0,0,0, $menu-bar-item-border-shadow-darken * 2);
     z-index: $menu-bar-item-hover-zindex;
     position: relative;
+
+    -moz-transition: background-position 0.1s linear;
+    -webkit-transition: background-position 0.1s linear;
+    background-position: 0 (-$gradient-shift);
   }
 }
 @mixin menu_bar_item_pressed{
@@ -171,14 +169,14 @@ $menu-bar-item-pressed-zindex: 3;
 @mixin menu_bar_item_disabled{
   @include button_colour(#fefefe, #dddede, $menu-bar-item-disabled-text-color, 0 1px 1px rgba(255, 255, 255, 0.75));
   cursor: default;
-  
+
   &:active{
     box-shadow: none;
   }
 }
 
 @mixin menu_bar_item_default_colour{
-  @include button_colour($menu-bar-item-light-colour, $menu-bar-item-dark-colour, $menu-bar-item-text-color, 0 1px 1px rgba(255, 255, 255, 0.75), 5px);
+  @include button_colour($menu-bar-item-light-colour, $menu-bar-item-dark-colour, $menu-bar-item-text-color, 0 1px 1px rgba(255, 255, 255, 0.75));
 }
 @mixin menu_bar_item_danger_colour{
   @include button_colour(#EE5F5B, #BD362F);
