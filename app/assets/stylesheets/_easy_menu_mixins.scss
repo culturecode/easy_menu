@@ -106,7 +106,7 @@ $menu-bar-item-pressed-zindex: 3;
   &.warning{ @include menu_bar_item_warning_colour }
   &.inverse{ @include menu_bar_item_inverse_colour }
 
-  @include menu_bar_item_disabled;
+  &.disabled { @include menu_bar_item_disabled }
 }
 
 @mixin menu_bar_item_base{
@@ -169,11 +169,10 @@ $menu-bar-item-pressed-zindex: 3;
 }
 
 @mixin menu_bar_item_disabled{
-  &.disabled{
-    @include button_colour(#fefefe, #dddede, $menu-bar-item-disabled-text-color, 0 1px 1px rgba(255, 255, 255, 0.75));
-    cursor: default;
-  }
-  &.disabled:active{
+  @include button_colour(#fefefe, #dddede, $menu-bar-item-disabled-text-color, 0 1px 1px rgba(255, 255, 255, 0.75));
+  cursor: default;
+  
+  &:active{
     box-shadow: none;
   }
 }
