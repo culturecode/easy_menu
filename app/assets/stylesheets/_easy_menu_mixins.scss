@@ -149,7 +149,6 @@ $menu-bar-item-pressed-zindex: 3;
     border-color: rgba(0,0,0, $menu-bar-item-border-darken * 2);
     border-bottom-color: rgba(0,0,0, $menu-bar-item-border-shadow-darken * 2);
     z-index: $menu-bar-item-hover-zindex;
-    position: relative;
 
     -moz-transition: background-position 0.1s linear;
     -webkit-transition: background-position 0.1s linear;
