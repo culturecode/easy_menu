@@ -10,7 +10,7 @@
 // STYLES
 .menu_bar.default_theme{
   display: block;
-  margin: 0;
+  margin: 0 (-$menu-bar-item-spacing / 2);
   padding: 0;
   list-style: none;
   height: $menu-bar-height;
@@ -20,9 +20,11 @@
   // MENU BAR_GROUP
   .menu_bar_group{
     padding: 0;
+    margin: 0 $menu-bar-item-spacing/2; // The group takes on the menu bar item margin since internally they will be touching.
 
     .menu_bar_content{
-      margin-left: -$menu-bar-item-spacing - $menu-bar-item-border-width;
+      margin-right: 0;
+      margin-left: -1px;
 
       .menu_bar_item{
         border-radius: 0;
@@ -30,16 +32,12 @@
     }
 
     .menu_bar_content:first-child{
-      margin-left: 0;
-
       .menu_bar_item{
         border-top-left-radius: $menu-bar-item-border-radius;
         border-bottom-left-radius: $menu-bar-item-border-radius;
       }
     }
     .menu_bar_content:last-child{
-      margin-right: 0;
-
       .menu_bar_item{
         border-top-right-radius: $menu-bar-item-border-radius;
         border-bottom-right-radius: $menu-bar-item-border-radius;
@@ -52,7 +50,7 @@
   .menu_bar_content{
     display: inline-block;
     vertical-align: middle;
-    margin: 0 $menu-bar-item-spacing 0 0;
+    margin: 0 ($menu-bar-item-spacing / 2);
 
     // MENU BAR ITEMS
     .menu_bar_item{
@@ -152,7 +150,6 @@
     // Allow right alignment of buttons
     &.right{
       float: right;
-      margin: 0 0 0 $menu-bar-item-spacing;
 
       .menu {
         right: 0;
