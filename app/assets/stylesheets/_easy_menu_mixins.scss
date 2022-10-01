@@ -229,7 +229,7 @@ $menu-bar-item-pressed-zindex: 3;
   }
 }
 @mixin menu_item_hover {
-  &.selected > * {
+  &.selected {
     @include easy_menu_icon(9, 5px);
 
     &:hover {
