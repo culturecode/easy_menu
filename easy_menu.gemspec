@@ -1,8 +1,8 @@
 Gem::Specification.new do |s|
   s.name = "easy_menu"
-  s.summary = "Simple menu bar dsl for Rails views"
+  s.summary = "Simple menu bar DSL for Rails views"
   s.files = Dir["{app,lib,config}/**/*"] + ["MIT-LICENSE", "README"]
-  s.version = "0.4.12"
+  s.version = "0.4.13"
   s.authors = ['Nicholas Jakobsen', 'Ryan Wallace']
 
   s.add_dependency "rails", ">= 3.1"
