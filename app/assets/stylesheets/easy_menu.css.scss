@@ -20,7 +20,7 @@
   // MENU BAR_GROUP
   .menu_bar_group{
     padding: 0;
-    margin: 0 $menu-bar-item-spacing/2; // The group takes on the menu bar item margin since internally they will be touching.
+    margin: 0;
 
     .menu_bar_content{
       margin-right: 0;
