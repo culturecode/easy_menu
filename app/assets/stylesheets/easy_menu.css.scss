@@ -29,21 +29,37 @@
       .menu_bar_item{
         border-radius: 0;
       }
-    }
 
-    .menu_bar_content:first-child{
-      .menu_bar_item{
-        border-top-left-radius: $menu-bar-item-border-radius;
-        border-bottom-left-radius: $menu-bar-item-border-radius;
+      &:not(.right) {
+        &:first-child{
+          .menu_bar_item{
+            border-top-left-radius: $menu-bar-item-border-radius;
+            border-bottom-left-radius: $menu-bar-item-border-radius;
+          }
+        }
+        &:last-child{
+          .menu_bar_item{
+            border-top-right-radius: $menu-bar-item-border-radius;
+            border-bottom-right-radius: $menu-bar-item-border-radius;
+          }
+        }
+      }
+
+      &.right{
+        &:first-child{
+          .menu_bar_item{
+            border-top-right-radius: $menu-bar-item-border-radius;
+            border-bottom-right-radius: $menu-bar-item-border-radius;
+          }
+        }
+        &:last-child{
+          .menu_bar_item{
+            border-top-left-radius: $menu-bar-item-border-radius;
+            border-bottom-left-radius: $menu-bar-item-border-radius;
+          }
+        }
       }
     }
-    .menu_bar_content:last-child{
-      .menu_bar_item{
-        border-top-right-radius: $menu-bar-item-border-radius;
-        border-bottom-right-radius: $menu-bar-item-border-radius;
-      }
-    }
-
   }
 
   // MENU BAR CONTENT
