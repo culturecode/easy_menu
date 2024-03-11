@@ -149,7 +149,7 @@
     }
     &.with_menu.no_js:hover, &.with_menu.open{
       .menu_bar_item {
-        background: white;
+        @include button_colour(white, white, $text-colour: $menu-bar-item-text-color, $text-shadow: none);
         border-radius: 2px 2px 0 0;
         @include menu-bar-item-border-colour-with-fallback;
         border-bottom: none;

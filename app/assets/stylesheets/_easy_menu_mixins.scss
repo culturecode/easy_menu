@@ -20,7 +20,7 @@ $menu-border-width: 1px;
 $menu-vertical-padding: 0.2em;
 $menu-item-vertical-padding: 0.4em;
 $menu-item-horizontal-padding: 2em;
-$menu-item-disabled-text-color: #AAA;
+$menu-item-disabled-text-colour: #AAA;
 // Make the button border appear even when in a group by popping the button up above its siblings
 $menu-bar-item-zindex: 1;
 $menu-bar-item-hover-zindex: 2;
@@ -78,6 +78,12 @@ $menu-bar-item-pressed-zindex: 3;
   @include menu-bar-item-border($dark);
 
   background-color: mix($light, $dark);
+
+  @if is-light($text-colour) {
+    --icon-filter: brightness(6);
+  } @else {
+    --icon-filter: brightness(1);
+  }
 
   // Don't override the background if the browser doesn't support gradients otherwise the buttons will be too dark
   &:not(oldbrowser){
@@ -253,7 +259,7 @@ $menu-bar-item-pressed-zindex: 3;
 @mixin menu_item_disabled{
   &.disabled, &.disabled > *{
     cursor: default;
-    color: $menu-item-disabled-text-color;
+    color: $menu-item-disabled-text-colour;
   }
 }
 
@@ -261,4 +267,11 @@ $menu-bar-item-pressed-zindex: 3;
   background-image: asset_url('icons.png');
   background-position: $indent -24px * ($iconNumber - 1);
   background-repeat: no-repeat;
+  filter: var(--icon-filter);
+}
+
+@function is-light($color) {
+  $result: invert($color);
+  $lightness: lightness($result);
+  @return $lightness < 50;
 }
