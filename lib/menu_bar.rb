@@ -84,7 +84,7 @@ class MenuBar
     arrow = @template.content_tag(:span, '', :class => config[:menu_bar_item_arrow_class])
 
     m = Menu.new(config, options)
-    mbt = MenuBarTrigger.new(config, button_text.html_safe + arrow, m, options[:menu_bar_item])
+    mbt = MenuBarTrigger.new(config, button_text.html_safe + ' ' + arrow, m, options[:menu_bar_item])
 
     yield m if block_given?
 

@@ -137,10 +137,9 @@
 
     }
     &.with_menu {
-      .menu_bar_item .arrow{
+      .menu_bar_item .arrow {
         @include easy_menu_icon(5, center);
-        margin: -12px -9px -12px -4px;
-        padding: 24px 14px 0 0;
+        padding: 24px 0 0 0;
         vertical-align: middle;
         width: 10px;
         display: inline-block;
