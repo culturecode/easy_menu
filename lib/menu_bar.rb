@@ -170,7 +170,7 @@ class MenuBar
     end
 
     def to_s
-      empty? ? '' : wrap_content(@content.join.html_safe) # Don't render anything if empty
+      empty? ? ''.html_safe : wrap_content(@content.join.html_safe) # Don't render anything if empty
     end
 
     def right_aligned?
