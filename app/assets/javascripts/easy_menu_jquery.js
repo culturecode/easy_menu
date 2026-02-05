@@ -4,7 +4,7 @@ $(document).ready(function() {
     // Because some browsers don't support submit buttons outside of forms triggering form submits,
     // do it in javascript just to make sure it happens
     $(document).on('click', 'input[type=submit][form]', function(){
-        var formId = this.getAttribute('form');
+        var formId = $(this).attr('form');
         var form = document.getElementById(formId);
         
         if (form) {
