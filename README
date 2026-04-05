@@ -1,4 +1,239 @@
 # Easy Menu
-## Make menus the easy way
 
-Supports Prototype and Jquery
+Simple menu bar and dropdown DSL for Rails views.
+
+Easy Menu provides a small Ruby DSL for building menu bars, grouped dropdowns, and menu actions in helpers or views. It ships with default styles and JavaScript behavior designed for traditional server-rendered Rails applications.
+
+Supports Prototype and jQuery integrations used by legacy projects.
+
+## Features
+
+- Ruby DSL for menu bars and dropdown menus
+- Nested menu groups and separators
+- Selection and disabled states
+- Right and left aligned menu content
+- Configurable global and per-menu behavior
+- Rails engine assets (styles and JavaScript)
+
+## Installation
+
+Add to your Gemfile:
+
+```ruby
+gem 'easy_menu'
+```
+
+Then run:
+
+```bash
+bundle install
+```
+
+## Quick Start
+
+Build a menu bar in a helper:
+
+```ruby
+def users_menu
+  MenuBar.new(self) do |mb|
+    mb.menu_bar_item(link_to('All Users', users_path)).selected(params[:action] == 'index')
+    mb.menu_bar_item(link_to('Invite', new_user_invitation_path))
+
+    mb.menu('More') do |menu|
+      menu.menu_item(link_to('Roles', roles_path))
+      menu.menu_item(link_to('Permissions', permissions_path))
+    end
+  end
+end
+```
+
+Render it in a view:
+
+```erb
+<%= users_menu %>
+```
+
+## Core DSL
+
+### MenuBar
+
+Create a menu bar:
+
+```ruby
+MenuBar.new(self, theme: :default_theme) do |mb|
+  # items
+end
+```
+
+Common methods:
+
+- `menu_bar_item(content, options = {})`
+- `menu(button_text, options = {}) { |menu| ... }`
+- `group(options = {}) { |group| ... }`
+- `menu_bar_content(content = nil, options = {}, &block)`
+- `menu_bar_input(content, options = {})`
+- `separator(options = {})`
+
+### Menu
+
+Inside `menu(...)` blocks:
+
+- `menu_item(content, options = {})`
+- `group(title, options = {}) { |group| ... }`
+- `menu_content(content = nil, options = {}, &block)`
+- `separator(options = {})`
+
+### Item States
+
+Most items support:
+
+- `.selected(true_or_false)`
+- `.disabled(true_or_false = true, click_blocker_html_options = {})`
+- `.disable_when(dom_element, dom_event, js_condition, click_blocker_html_options = {})`
+
+## Alignment and Ordering
+
+Menu item alignment is set on the content wrapper:
+
+```ruby
+mb.menu_bar_item(link_to('Sign Out', destroy_user_session_path), align: :right)
+```
+
+### Right-Aligned Insert Strategy
+
+Easy Menu supports two right-aligned insertion strategies:
+
+- `:legacy_prepend` (default)
+  - Preserves historical float-right behavior.
+  - Right-aligned items are prepended internally.
+- `:preserve_definition_order`
+  - Right-aligned items keep the same order they are declared in Ruby.
+  - Useful for flexbox-based layouts.
+
+Set per menu bar:
+
+```ruby
+MenuBar.new(self, right_aligned_insert_strategy: :preserve_definition_order) do |mb|
+  mb.menu_bar_item(link_to('My Account', my_account_path), align: :right)
+  mb.menu_bar_item(link_to('Sign Out', destroy_user_session_path), align: :right)
+end
+```
+
+Set globally:
+
+```ruby
+MenuBar.config[:right_aligned_insert_strategy] = :preserve_definition_order
+```
+
+### Explicit Indexing
+
+`index` always takes precedence over insert strategy:
+
+```ruby
+mb.menu_bar_item(link_to('First', first_path), index: 0)
+```
+
+## Configuration
+
+Configuration is available through `MenuBar.config` and defaults from `EasyMenu::Configuration::Default`.
+
+Examples:
+
+- Element wrappers (`:menu_bar_element`, `:menu_item_element`, ...)
+- CSS class names (`:menu_bar_class`, `:menu_item_class`, ...)
+- State classes (`:selected_class`, `:disabled_class`)
+- Right alignment strategy (`:right_aligned_insert_strategy`)
+
+Per-menu overrides can be passed using `config:`:
+
+```ruby
+MenuBar.new(self, config: { menu_bar_element: :nav }) do |mb|
+  mb.menu_bar_item('Example')
+end
+```
+
+## HTML Options and Data Attributes
+
+Most wrapper/item calls accept standard HTML options:
+
+- `id`
+- `class`
+- `title`
+- `style`
+- `data`
+- `data-*` keys
+
+## Styling and JavaScript Notes
+
+- The gem provides default styles (`easy_menu.css.scss`) and behavior hooks.
+- `menu_bar_content_with_menu_class` defaults to `with_menu no_js`.
+- The `no_js` class is meant to be removed client-side when JavaScript is active.
+
+Projects commonly layer app-specific CSS on top of Easy Menu's baseline classes.
+
+## Common Patterns
+
+### Search Form Content in a Menu Bar
+
+```ruby
+mb.group do |group|
+  group.menu_bar_content do
+    form_tag(search_path, method: :get) { text_field_tag(:q) }
+  end
+  group.menu_bar_item(link_to('Clear', search_path)) if params[:q].present?
+end
+```
+
+### Grouped Dropdown Menu
+
+```ruby
+mb.menu('Admin') do |menu|
+  menu.group('Users') do |group|
+    group.menu_item(link_to('List', users_path))
+    group.menu_item(link_to('Invite', new_user_invitation_path))
+  end
+
+  menu.separator
+
+  menu.group('System') do |group|
+    group.menu_item(link_to('Configuration', system_configuration_path))
+  end
+end
+```
+
+## Migration Notes for Flex Layouts
+
+If your app moved menu bars from float-based CSS to flexbox:
+
+- Keep default `:legacy_prepend` unless you verify visual order is correct.
+- Prefer `:preserve_definition_order` for flex layouts where declaration order should match render order.
+- If needed, enable per-menu first, then move to global config.
+
+## Troubleshooting
+
+### Right-aligned items appear reversed
+
+Use:
+
+```ruby
+MenuBar.new(self, right_aligned_insert_strategy: :preserve_definition_order)
+```
+
+### Unexpected classes or wrappers
+
+Check `MenuBar.config` overrides and project CSS specificity.
+
+### Empty separators at the end
+
+`remove_dangling_separators` defaults to `true` and removes trailing separators.
+
+## Development
+
+- This gem is a Rails engine.
+- Main DSL entry point: `lib/menu_bar.rb`
+- Config defaults: `lib/easy_menu_configuration.rb`
+- Shared helper behavior: `lib/easy_menu_helpers.rb`
+
+## License
+
+MIT. See `MIT-LICENSE`.

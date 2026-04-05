@@ -45,7 +45,12 @@ module EasyMenu
       :menu_content_element             => :li,
       :menu_group_title_element         => :div,
       :menu_group_element               => :ul,
-      :menu_item_element                => :div
+      :menu_item_element                => :div,
+
+      # Right-aligned insertion strategy:
+      # - :legacy_prepend preserves historical float-right behavior (default)
+      # - :preserve_definition_order keeps right-aligned items in declaration order
+      :right_aligned_insert_strategy    => :legacy_prepend
     }
 
     Bootstrap =  {

@@ -143,12 +143,25 @@ class MenuBar
   def store_menu_bar_content(mbc, options = {})
     if options[:index]
       @content.insert(options[:index], mbc)
-    # Ensure that right aligned menu bar content appears on the page in the order it is inserted
     elsif mbc.right_aligned?
-      @content.prepend(mbc)
+      if right_aligned_insert_strategy == :preserve_definition_order
+        @content << mbc
+      else
+        # Ensure that right aligned menu bar content appears on the page in the order it is inserted
+        # when rendered with float-based right alignment (legacy behavior).
+        @content.prepend(mbc)
+      end
     else
       @content << mbc
     end
+  end
+
+  def right_aligned_insert_strategy
+    strategy = @options[:right_aligned_insert_strategy] || config[:right_aligned_insert_strategy]
+    strategy = strategy.to_sym if strategy.respond_to?(:to_sym)
+    return strategy if [:legacy_prepend, :preserve_definition_order].include?(strategy)
+
+    raise ArgumentError, "Unknown right_aligned_insert_strategy: #{strategy.inspect}"
   end
 
   # ABSTRACT CLASSES
