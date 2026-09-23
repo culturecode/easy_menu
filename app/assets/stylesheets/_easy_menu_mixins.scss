@@ -256,7 +256,7 @@ $menu-bar-item-pressed-zindex: 3;
 }
 
 @mixin easy_menu_icon($iconNumber, $indent:center){
-  background-image: asset_url('icons.png');
+  background-image: url('icons.png');
   background-position: $indent -24px * ($iconNumber - 1);
   background-repeat: no-repeat;
   filter: var(--icon-filter);
