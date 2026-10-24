@@ -5,7 +5,7 @@
 *= require_self
 */
 
-@import 'easy_menu_mixins';
+@use 'easy_menu_mixins' as *;
 
 // STYLES
 .menu_bar.default_theme{
