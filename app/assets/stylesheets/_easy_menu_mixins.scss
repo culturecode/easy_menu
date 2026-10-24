@@ -1,3 +1,6 @@
+@use "sass:color";
+@use "sass:math";
+
 // VARIABLES
 $menu-bar-item-horizontal-padding: 7px;
 $menu-bar-item-height: 26px;
@@ -39,11 +42,11 @@ $menu-bar-item-pressed-zindex: 3;
   user-drag: none;
 }
 @mixin menu-bar-item-border-shadow-with-fallback($background-colour: $menu-bar-item-dark-colour){
-  border-bottom-color: darken($background-colour, percentage($menu-bar-item-border-shadow-darken)); // Fallback
+  border-bottom-color: color.to-gamut(color.adjust($background-colour, $lightness: -(math.percentage($menu-bar-item-border-shadow-darken)), $space: hsl), $space: rgb, $method: clip); // Fallback
   border-bottom-color: $menu-bar-item-border-shadow-colour;
 }
 @mixin menu-bar-item-border-colour-with-fallback($background-colour: $menu-bar-item-dark-colour){
-  border-color: darken($background-colour, percentage($menu-bar-item-border-darken)); // Fallback
+  border-color: color.to-gamut(color.adjust($background-colour, $lightness: -(math.percentage($menu-bar-item-border-darken)), $space: hsl), $space: rgb, $method: clip); // Fallback
   border-color: $menu-bar-item-border-colour;
   @include menu-bar-item-border-shadow-with-fallback($background-colour);
 }
@@ -69,7 +72,7 @@ $menu-bar-item-pressed-zindex: 3;
   text-shadow: $text-shadow;
   @include menu-bar-item-border($dark);
 
-  background-color: mix($light, $dark);
+  background-color: color.mix($light, $dark);
 
   @if is-light($text-colour) {
     --icon-filter: brightness(6);
@@ -263,7 +266,7 @@ $menu-bar-item-pressed-zindex: 3;
 }
 
 @function is-light($color) {
-  $result: invert($color);
-  $lightness: lightness($result);
+  $result: color.invert($color);
+  $lightness: color.channel($result, "lightness", $space: hsl);
   @return $lightness < 50;
 }
